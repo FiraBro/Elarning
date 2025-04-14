@@ -81,7 +81,6 @@ const resetPassword = async (req, res) => {
       resetPasswordToken: token,
       resetPasswordExpires: { $gt: Date.now() },
     });
-
     if (!user)
       return res
         .status(400)
