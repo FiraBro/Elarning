@@ -12,14 +12,14 @@ const createCourse = async (req, res) => {
     await course.save();
     res.status(201).json(course);
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({status:'success', message: "Server error" });
   }
 };
 
 const getCourses = async (req, res) => {
   try {
     const courses = await Course.find().populate("instructor", "name");
-    res.json(courses);
+    res.json({ status: "success", length: courses.length, courses });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
