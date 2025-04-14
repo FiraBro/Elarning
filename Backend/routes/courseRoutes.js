@@ -5,7 +5,7 @@ const adminMiddleware = require("../middlewares/adminMiddleware");
 
 const router = express.Router();
 
-router.post("/", authMiddleware, adminMiddleware, createCourse);
+router.post("/", authMiddleware,adminMiddleware, createCourse);
 router.get("/", getCourses);
 
 module.exports = router;
