@@ -1,28 +1,76 @@
 const Course = require("../models/Course");
+const APIFeatures = require("../utils/apiFeatures");
+const AppError = require("../utils/appError");
+const catchAsync = require("../utils/catchAsync");
 
-const createCourse = async (req, res) => {
-  const { title, description, price } = req.body;
-  try {
-    const course = new Course({
-      title,
-      description,
-      price,
-      instructor: req.user.id,
-    });
-    await course.save();
-    res.status(201).json(course);
-  } catch (error) {
-    res.status(500).json({status:'success', message: "Server error" });
+/**
+ * @desc    Create a new course
+ * @route   POST /api/courses
+ * @access  Private/Instructor
+ */
+const createCourse = catchAsync(async (req, res, next) => {
+  const { title, description, price, category, level } = req.body;
+
+  // Basic validation
+  if (!title || !description || !price) {
+    return next(new AppError("Title, description and price are required", 400));
   }
-};
 
-const getCourses = async (req, res) => {
-  try {
-    const courses = await Course.find().populate("instructor", "name");
-    res.json({ status: "success", length: courses.length, courses });
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
+  // Create course with additional metadata
+  const course = await Course.create({
+    title,
+    description,
+    shortDescription: description.substring(0, 160),
+    price,
+    instructor: req.user.id,
+    category: category || "Other",
+    level: level || "Beginner",
+    requirements: req.body.requirements || [],
+    learningOutcomes: req.body.learningOutcomes || [],
+    tags: req.body.tags || [],
+  });
 
-module.exports = { createCourse, getCourses };
+  res.status(201).json({
+    status: "success",
+    data: {
+      course,
+    },
+  });
+});
+
+/**
+ * @desc    Get all courses
+ * @route   GET /api/courses
+ * @access  Public
+ */
+const getCourses = catchAsync(async (req, res, next) => {
+  // 1) Build query
+  const features = new APIFeatures(Course.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  // 2) Execute query
+  const courses = await features.query.populate({
+    path: "instructor",
+    select: "name email avatar",
+  });
+
+  // 3) Get total count for pagination
+  const total = await Course.countDocuments(features.filterQuery);
+
+  res.status(200).json({
+    status: "success",
+    results: courses.length,
+    total,
+    data: {
+      courses,
+    },
+  });
+});
+
+module.exports = {
+  createCourse,
+  getCourses,
+};
