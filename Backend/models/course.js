@@ -3,22 +3,14 @@ const mongoose = require("mongoose");
 const courseSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
+  price: { type: Number, required: true },
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  price: { type: Number, default: 0 },
-  category: { type: String, required: true },
-  thumbnail: { type: String },
-  videos: [
-    {
-      title: String,
-      url: String,
-      duration: String,
-    },
-  ],
-  studentsEnrolled: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  video: { type: String, required: false }, // URL or path to course video
+  banner: { type: String, required: false }, // URL or path to course banner image
   createdAt: { type: Date, default: Date.now },
 });
 
