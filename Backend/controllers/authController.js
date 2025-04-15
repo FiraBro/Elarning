@@ -12,7 +12,7 @@ const validator = require("validator");
  * @route   POST /api/auth/register
  * @access  Public
  */
-const register = catchAsync(async (req, res, next) => {
+exports.register = catchAsync(async (req, res, next) => {
   const { name, email, password, role } = req.body;
 
   // 1) Validate input
@@ -77,7 +77,7 @@ const register = catchAsync(async (req, res, next) => {
  * @route   POST /api/auth/login
  * @access  Public
  */
-const login = catchAsync(async (req, res, next) => {
+exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   // 1) Check if email and password exist
@@ -130,58 +130,38 @@ const login = catchAsync(async (req, res, next) => {
  * @route   POST /api/auth/forgot-password
  * @access  Public
  */
-const forgotPassword = catchAsync(async (req, res, next) => {
-  // 1) Get user based on POSTed email
-  const user = await User.findOne({ email: req.body.email.toLowerCase() });
-  if (!user) {
-    return next(new AppError("No user found with that email address", 404));
-  }
-
-  // 2) Generate the random reset token
-  const resetToken = user.createPasswordResetToken();
-  await user.save({ validateBeforeSave: false });
-
-  // 3) Send it to user's email
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
   try {
-    const resetURL = `${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/auth/reset-password/${resetToken}`;
+    const user = await User.findOne({ email });
+    if (!user)
+      return res
+        .status(404)
+        .json({ status: "fail", message: "User not found" });
 
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
     await sendEmail({
       to: user.email,
-      subject: "Your password reset token (valid for 10 min)",
-      template: "passwordReset",
-      context: {
-        name: user.name,
-        resetURL,
-      },
+      subject: "Password Reset Request",
+      text: `You requested a password reset. Click this link to reset your password: ${resetUrl}\n\nThis link expires in 1 hour.`,
     });
 
-    res.status(200).json({
-      status: "success",
-      message: "Token sent to email!",
-    });
-  } catch (err) {
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save({ validateBeforeSave: false });
-
-    return next(
-      new AppError(
-        "There was an error sending the email. Try again later!",
-        500
-      )
-    );
+    res
+      .status(200)
+      .json({ status: "success", message: "Password reset email sent" });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({ status: "fail", message: "Server error" });
   }
-});
+};
 
-/**
- * @desc    Reset password
- * @route   PATCH /api/auth/reset-password/:token
- * @access  Public
- */
-const resetPassword = catchAsync(async (req, res, next) => {
-  // 1) Get user based on the token
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  // 1. Get user based on token
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
@@ -192,30 +172,35 @@ const resetPassword = catchAsync(async (req, res, next) => {
     passwordResetExpires: { $gt: Date.now() },
   });
 
-  // 2) If token has not expired, and there is user, set the new password
+  // 2. If token invalid or expired
   if (!user) {
     return next(new AppError("Token is invalid or has expired", 400));
   }
 
-  // 3) Update password and remove reset token fields
+  // 3. Update password
   user.password = req.body.password;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   user.passwordChangedAt = Date.now();
   await user.save();
 
-  // 4) Log the user in, send JWT
-  const token = generateToken(user._id);
-
-  // 5) Send confirmation email
-  sendEmail({
-    to: user.email,
+  // 4. Send confirmation email
+  await sendEmail({
+    email: user.email,
     subject: "Your password has been changed",
-    template: "passwordChanged",
-    context: {
-      name: user.name,
-    },
-  }).catch((err) => console.error("Error sending password change email:", err));
+    message: "Your password was successfully updated.",
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2 style="color: #333;">Password Updated</h2>
+        <p>Hello ${user.name || "User"},</p>
+        <p>Your password was successfully changed on ${new Date().toLocaleString()}.</p>
+        <p>If you didn't make this change, please contact us immediately.</p>
+      </div>
+    `,
+  });
+
+  // 5. Create and send JWT
+  const token = generateToken(user._id);
 
   res.status(200).json({
     status: "success",
@@ -223,10 +208,3 @@ const resetPassword = catchAsync(async (req, res, next) => {
     message: "Password updated successfully",
   });
 });
-
-module.exports = {
-  register,
-  login,
-  forgotPassword,
-  resetPassword,
-};
