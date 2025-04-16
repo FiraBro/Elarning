@@ -1,5 +1,4 @@
-const User = require("../models/User");
-// const bcrypt = require("bcryptjs");
+const User = require("../models/user");
 const { generateToken } = require("../config/jwt");
 const { sendEmail } = require("../services/emailService");
 const crypto = require("crypto");
@@ -30,7 +29,7 @@ exports.register = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 2) Check if user exists
+  // 2) Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     return next(
@@ -38,7 +37,7 @@ exports.register = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 3) Create new user
+  // 3) Create user
   const newUser = await User.create({
     name,
     email: email.toLowerCase(),
@@ -46,13 +45,13 @@ exports.register = catchAsync(async (req, res, next) => {
     role: role || "student",
   });
 
-  // 4) Generate JWT token
+  // 4) Generate token
   const token = generateToken(newUser._id);
 
   // 5) Remove password from output
   newUser.password = undefined;
 
-  // 6) Send welcome email (in background, don't await)
+  // 6) Send welcome email (in background)
   sendEmail({
     to: newUser.email,
     subject: "Welcome to Our Platform!",
@@ -85,12 +84,15 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError("Please provide email and password", 400));
   }
 
-  // 2) Check if user exists and password is correct
+  // 2) Find user and validate password
   const user = await User.findOne({ email: email.toLowerCase() }).select(
     "+password +active"
   );
-
-  if (!user || !(await user.correctPassword(password, user.password))) {
+  if (
+    !user ||
+    !user.password ||
+    !(await user.correctPassword(password, user.password))
+  ) {
     return next(new AppError("Incorrect email or password", 401));
   }
 
@@ -130,38 +132,57 @@ exports.login = catchAsync(async (req, res, next) => {
  * @route   POST /api/auth/forgot-password
  * @access  Public
  */
-exports.forgotPassword = async (req, res) => {
+exports.forgotPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user)
-      return res
-        .status(404)
-        .json({ status: "fail", message: "User not found" });
 
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-    await user.save();
-
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-    await sendEmail({
-      to: user.email,
-      subject: "Password Reset Request",
-      text: `You requested a password reset. Click this link to reset your password: ${resetUrl}\n\nThis link expires in 1 hour.`,
-    });
-
-    res
-      .status(200)
-      .json({ status: "success", message: "Password reset email sent" });
-  } catch (error) {
-    console.error("Forgot password error:", error);
-    res.status(500).json({ status: "fail", message: "Server error" });
+  if (!email || !validator.isEmail(email)) {
+    return next(new AppError("Please provide a valid email address", 400));
   }
-};
 
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ status: "fail", message: "User not found" });
+  }
+
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  user.passwordResetToken = hashedToken;
+  user.passwordResetExpires = Date.now() + 3600000; // 1 hour
+  await user.save();
+
+  const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+  await sendEmail({
+    to: user.email,
+    subject: "Password Reset Request",
+    text: `You requested a password reset. Click this link to reset your password: ${resetUrl}\n\nThis link expires in 1 hour.`,
+  });
+
+  res.status(200).json({
+    status: "success",
+    message: "Password reset email sent",
+  });
+});
+
+/**
+ * @desc    Reset password
+ * @route   POST /api/auth/reset-password/:token
+ * @access  Public
+ */
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  // 1. Get user based on token
+  const { password } = req.body;
+
+  // Validate password
+  if (!password || password.length < 8) {
+    return next(
+      new AppError("Password must be at least 8 characters long", 400)
+    );
+  }
+
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
@@ -172,23 +193,19 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     passwordResetExpires: { $gt: Date.now() },
   });
 
-  // 2. If token invalid or expired
   if (!user) {
     return next(new AppError("Token is invalid or has expired", 400));
   }
 
-  // 3. Update password
-  user.password = req.body.password;
+  user.password = password;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   user.passwordChangedAt = Date.now();
   await user.save();
 
-  // 4. Send confirmation email
   await sendEmail({
-    email: user.email,
+    to: user.email,
     subject: "Your password has been changed",
-    message: "Your password was successfully updated.",
     html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
         <h2 style="color: #333;">Password Updated</h2>
@@ -199,7 +216,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     `,
   });
 
-  // 5. Create and send JWT
   const token = generateToken(user._id);
 
   res.status(200).json({
