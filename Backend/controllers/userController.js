@@ -5,7 +5,7 @@ const AppError = require("../utils/appError");
 exports.getAllUser = catchAsync(async (req, res, next) => {
   const users = await User.find();
   if (!users) {
-    return next(new AppError("No user is found please rty again later!", 400));
+    return next(new AppError("No user is found please try again later!", 400));
   }
   res.status(200).json({
     status: "success",
