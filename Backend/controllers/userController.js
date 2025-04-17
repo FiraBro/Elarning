@@ -26,3 +26,12 @@ exports.getUser = catchAsync(async (req, res, next) => {
     },
   });
 });
+exports.getMe = catchAsync(async(req,res,next)=>{
+
+})
+exports.createUser = (req, res) => {
+    res.status(500).json({
+      status: 'fail',
+      message: 'This route is not defined! Please use /register instead'
+    });
+  };
