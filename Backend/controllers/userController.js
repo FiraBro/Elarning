@@ -36,8 +36,9 @@ exports.userPhotoResize = catchAsync(async (req, res, next) => {
   sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat("jpeg")
-    .jpeg({quality:90})
+    .jpeg({ quality: 90 })
     .toFile(`upload/userImage/${req.file.filename}`);
+  next();
 });
 
 const filterObj = (obj, allowedFields) => {
