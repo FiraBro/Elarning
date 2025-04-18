@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const userRoutes = require("./routes/userRoutes");
+const globalErrorHandler = require("./controllers/errorController");
 // const paymentRoutes = require('./routes/paymentRoutes');
 
 dotenv.config();
@@ -13,7 +14,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/users", userRoutes);
-
+app.use(globalErrorHandler);
 // app.use('/api/payments', paymentRoutes);
 
 mongoose
