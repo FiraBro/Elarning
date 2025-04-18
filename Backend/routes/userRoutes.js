@@ -9,14 +9,11 @@ userRouter.get(
   userController.getAllUser
 );
 userRouter.post("/", userController.createUser);
-userRouter.get(
-  "/me",
-  userController.getMe,
-  userController.getUser
-);
+userRouter.get("/me", userController.getMe, userController.getUser);
 userRouter.patch(
   "/updateMe",
   userController.uploadPhoto,
+  userController.userPhotoResize,
   userController.updateMe
 );
 module.exports = userRouter;
