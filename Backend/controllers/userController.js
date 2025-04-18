@@ -1,20 +1,23 @@
 const multer = require("multer");
+const sharp = require("sharp");
 const User = require("../models/user");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "upload/userImage");
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split("/")[1]; // Correct variable name (ex → ext)
-    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`); // Fixed filename format
-  },
-});
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "upload/userImage");
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = file.mimetype.split("/")[1];
+//     cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+//   },
+// });
+
+const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) { // ✅ Corrected to "image" (not "images")
+  if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
     cb(new AppError("Please upload only images.", 400), false);
@@ -22,11 +25,20 @@ const multerFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage: multerStorage, // ✅ Corrected to "storage" (not "Storage")
+  storage: multerStorage,
   fileFilter: multerFilter,
 });
 
 exports.uploadPhoto = upload.single("photo");
+
+exports.userPhotoResize = catchAsync(async (req, res, next) => {
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat("jpeg")
+    .jpeg({quality:90})
+    .toFile(`upload/userImage/${req.file.filename}`);
+});
 
 const filterObj = (obj, allowedFields) => {
   const newObj = {};
@@ -35,6 +47,7 @@ const filterObj = (obj, allowedFields) => {
   });
   return newObj;
 };
+
 exports.getAllUser = catchAsync(async (req, res, next) => {
   const users = await User.find();
   if (!users) {
@@ -48,6 +61,7 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
     },
   });
 });
+
 exports.getUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -60,11 +74,13 @@ exports.getUser = catchAsync(async (req, res, next) => {
     },
   });
 });
+
 exports.getMe = catchAsync(async (req, res, next) => {
   req.params.id = req.user.id;
   console.log(req.user.id);
   next();
 });
+
 exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password) {
     return next(
@@ -75,6 +91,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     );
   }
   const filteredFields = filterObj(req.body, "name", "email");
+  if (req.file) filteredFields.photo = req.file.filename;
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
     filteredFields,
@@ -88,6 +105,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     user: updatedUser,
   });
 });
+
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndDelete(req.user.id, { active: false });
   res.status(200).json({
@@ -95,6 +113,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
 exports.deleteUser = catchAsync(async (req, res, next) => {
   const doc = await User.findByIdAndDelete(req.params.id);
   if (!doc) {
@@ -105,6 +124,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     message: "User with this ID is successfully deleted",
   });
 });
+
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: "fail",
