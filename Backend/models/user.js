@@ -34,9 +34,9 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "instructor", "admin"],
       default: "student",
     },
-    avatar: {
-      url: String,
-      altText: String,
+    photo: {
+      type: String,
+      default: "default.jpj",
     },
     bio: {
       type: String,
