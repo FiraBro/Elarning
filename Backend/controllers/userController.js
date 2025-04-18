@@ -1,6 +1,32 @@
+const multer = require("multer");
 const User = require("../models/user");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "upload/userImage");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1]; // Correct variable name (ex → ext)
+    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`); // Fixed filename format
+  },
+});
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) { // ✅ Corrected to "image" (not "images")
+    cb(null, true);
+  } else {
+    cb(new AppError("Please upload only images.", 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage, // ✅ Corrected to "storage" (not "Storage")
+  fileFilter: multerFilter,
+});
+
+exports.uploadPhoto = upload.single("photo");
 
 const filterObj = (obj, allowedFields) => {
   const newObj = {};
@@ -36,6 +62,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
 });
 exports.getMe = catchAsync(async (req, res, next) => {
   req.params.id = req.user.id;
+  console.log(req.user.id);
   next();
 });
 exports.updateMe = catchAsync(async (req, res, next) => {
