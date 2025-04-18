@@ -2,12 +2,21 @@ const express = require("express");
 const userRouter = express.Router();
 const userController = require("../controllers/userController");
 const authController = require("../controllers/authController");
-userRouter
-  .route("/")
-  .get(
-    authController.protect,
-    authController.restrictTo("admin"),
-    userController.getAllUser
-  );
-userRouter.route("/").post(userController.createUser);
+userRouter.use(authController.protect);
+userRouter.get(
+  "/",
+  authController.restrictTo("admin"),
+  userController.getAllUser
+);
+userRouter.post("/", userController.createUser);
+userRouter.get(
+  "/me",
+  userController.getMe,
+  userController.getUser
+);
+userRouter.patch(
+  "/updateMe",
+  userController.uploadPhoto,
+  userController.updateMe
+);
 module.exports = userRouter;
