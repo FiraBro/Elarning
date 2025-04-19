@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .button {
+        display: inline-block;
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Welcome, {{firstName}}!</h2>
+    <p>Thank you for joining our platform. We're excited to have you!</p>
+    <p><a href="{{url}}" class="button">Get Started</a></p>
+    <p>If you didn't create an account, please ignore this email.</p>
+    <footer style="margin-top: 20px; font-size: 12px; color: #777">
+      &copy; {{year}} Your App Name. All rights reserved.
+    </footer>
+  </body>
+</html>
