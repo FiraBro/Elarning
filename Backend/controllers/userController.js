@@ -133,3 +133,44 @@ exports.createUser = (req, res) => {
     message: "This route is not defined! Please use /register instead",
   });
 };
+
+
+
+
+// const filterObj = (obj, allowedFields) => {
+//   const newObj = {};
+//   Object.keys(obj).forEach((el) => {
+//     if (allowedFields.includes(el)) newObj[el] = obj[el];
+//   });
+//   return newObj;
+// };
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+  if (req.body.password) {
+    return next(
+      new AppError(
+        "This not the right place for updating password, please use reset-password instead!",
+        400
+      )
+    );
+  }
+  
+  // Pass allowed fields as an array
+  const filteredFields = filterObj(req.body, ["name", "email"]);
+  
+  if (req.file) filteredFields.photo = req.file.filename;
+  
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    filteredFields,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  
+  res.status(200).json({
+    status: "success",
+    user: updatedUser,
+  });
+});
