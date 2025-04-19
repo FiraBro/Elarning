@@ -83,17 +83,46 @@ exports.getMe = catchAsync(async (req, res, next) => {
   next();
 });
 
+// exports.updateMe = catchAsync(async (req, res, next) => {
+//   if (req.body.password) {
+//     return next(
+//       new AppError(
+//         "This not the right place for updating password,please use reset-password instead!",
+//         400
+//       )
+//     );
+//   }
+//   const filteredFields = filterObj(req.body, "name", "email");
+//   if (req.file) filteredFields.photo = req.file.filename;
+//   const updatedUser = await User.findByIdAndUpdate(
+//     req.user.id,
+//     filteredFields,
+//     {
+//       new: true,
+//       runValidators: true,
+//     }
+//   );
+//   res.status(200).json({
+//     status: "success",
+//     user: updatedUser,
+//   });
+// });
+
 exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password) {
     return next(
       new AppError(
-        "This not the right place for updating password,please use reset-password instead!",
+        "This not the right place for updating password, please use reset-password instead!",
         400
       )
     );
   }
-  const filteredFields = filterObj(req.body, "name", "email");
+
+  // Pass allowed fields as an array
+  const filteredFields = filterObj(req.body, ["name", "email"]);
+
   if (req.file) filteredFields.photo = req.file.filename;
+
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
     filteredFields,
@@ -102,6 +131,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       runValidators: true,
     }
   );
+
   res.status(200).json({
     status: "success",
     user: updatedUser,
@@ -134,9 +164,6 @@ exports.createUser = (req, res) => {
   });
 };
 
-
-
-
 // const filterObj = (obj, allowedFields) => {
 //   const newObj = {};
 //   Object.keys(obj).forEach((el) => {
@@ -145,32 +172,32 @@ exports.createUser = (req, res) => {
 //   return newObj;
 // };
 
-exports.updateMe = catchAsync(async (req, res, next) => {
-  if (req.body.password) {
-    return next(
-      new AppError(
-        "This not the right place for updating password, please use reset-password instead!",
-        400
-      )
-    );
-  }
-  
-  // Pass allowed fields as an array
-  const filteredFields = filterObj(req.body, ["name", "email"]);
-  
-  if (req.file) filteredFields.photo = req.file.filename;
-  
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user.id,
-    filteredFields,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-  
-  res.status(200).json({
-    status: "success",
-    user: updatedUser,
-  });
-});
+// exports.updateMe = catchAsync(async (req, res, next) => {
+//   if (req.body.password) {
+//     return next(
+//       new AppError(
+//         "This not the right place for updating password, please use reset-password instead!",
+//         400
+//       )
+//     );
+//   }
+
+//   // Pass allowed fields as an array
+//   const filteredFields = filterObj(req.body, ["name", "email"]);
+
+//   if (req.file) filteredFields.photo = req.file.filename;
+
+//   const updatedUser = await User.findByIdAndUpdate(
+//     req.user.id,
+//     filteredFields,
+//     {
+//       new: true,
+//       runValidators: true,
+//     }
+//   );
+
+//   res.status(200).json({
+//     status: "success",
+//     user: updatedUser,
+//   });
+// });
