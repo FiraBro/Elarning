@@ -43,6 +43,7 @@ const createCourse = catchAsync(async (req, res, next) => {
  * @route   GET /api/courses
  * @access  Public
  */
+
 const getCourses = catchAsync(async (req, res, next) => {
   // 1) Build query
   const features = new APIFeatures(Course.find(), req.query)
