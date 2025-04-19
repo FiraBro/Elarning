@@ -10,6 +10,7 @@ userRouter.get(
 );
 userRouter.post("/", userController.createUser);
 userRouter.get("/me", userController.getMe, userController.getUser);
+userRouter.get("/:id", userController.getUser);
 userRouter.patch(
   "/updateMe",
   userController.uploadPhoto,
