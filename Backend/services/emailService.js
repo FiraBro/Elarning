@@ -83,4 +83,10 @@ module.exports = class Email {
       "Your password reset token (valid for 10 minutes)"
     );
   }
+  async sendPasswordChangeNotification() {
+    await this.send(
+      "passwordChange",
+      "Your password is changed 10 minutes ago"
+    );
+  }
 };
