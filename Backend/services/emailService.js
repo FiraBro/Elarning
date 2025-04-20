@@ -1,43 +1,3 @@
-// const nodemailer = require("nodemailer");
-// module.exports = class Email {
-//   constructor(user, url) {
-//     (this.to = user.email),
-//       (this.firstName = user.name.split(" ")[0]),
-//       (this.url = url);
-//     this.from = ` Firagos Jemal<${process.env.EMAIL_FROM}>`;
-//   }
-//   newransport() {
-//     if ((process.env.NODE = "production")) {
-//       return 1;
-//     }
-//     return nodemailer.createTransport({
-//       service: "gmail",
-//       auth: {
-//         user: process.env.EMAIL_USER,
-//         pass: process.env.EMAIL_PASS,
-//       },
-//     });
-//   }
-// };
-// const sendEmail = async ({ to, subject, text }) => {
-//   const transporter = nodemailer.createTransport({
-//     service: "gmail",
-//     auth: {
-//       user: process.env.EMAIL_USER,
-//       pass: process.env.EMAIL_PASS,
-//     },
-//   });
-
-//   await transporter.sendMail({
-//     from: process.env.EMAIL_USER,
-//     to,
-//     subject,
-//     text,
-//   });
-// };
-
-// module.exports = { sendEmail };
-
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
@@ -57,10 +17,10 @@ module.exports = class Email {
       // SendGrid for production
       return nodemailer.createTransport({
         service: "SendGrid",
-        auth: {
-          user: process.env.SENDGRID_USERNAME,
-          pass: process.env.SENDGRID_PASSWORD,
-        },
+        // auth: {
+        //   user: process.env.SENDGRID_USERNAME,
+        //   pass: process.env.SENDGRID_PASSWORD,
+        // },
       });
     }
 
