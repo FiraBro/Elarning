@@ -151,11 +151,9 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-  await sendEmail({
-    to: user.email,
-    subject: "Password Reset Request",
-    text: `You requested a password reset. Click this link to reset your password: ${resetUrl}\n\nThis link expires in 1 hour.`,
-  });
+  await new Email(user, resetUrl)
+    .sendPasswordReset()
+    .catch((err) => console.log(err));
 
   res.status(200).json({
     status: "success",
