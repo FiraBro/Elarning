@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { generateToken } = require("../config/jwt");
-const { sendEmail } = require("../services/emailService");
+const Email = require("../services/emailService");
 const crypto = require("crypto");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
@@ -51,16 +51,10 @@ exports.register = catchAsync(async (req, res, next) => {
 
   // 5) Remove password from output
   newUser.password = undefined;
-
   // 6) Send welcome email (in background)
-  sendEmail({
-    to: newUser.email,
-    subject: "Welcome to Our Platform!",
-    template: "welcome",
-    context: {
-      name: newUser.name,
-    },
-  }).catch((err) => console.error("Error sending welcome email:", err));
+  new Email(newUser, process.env.FRONTEND_URL) // <-- Fix here
+    .sendWelcome()
+    .catch((err) => console.error("Error sending welcome email:", err));
 
   // 7) Send response
   res.status(201).json({
