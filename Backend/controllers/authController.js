@@ -196,18 +196,9 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordChangedAt = Date.now();
   await user.save();
 
-  await sendEmail({
-    to: user.email,
-    subject: "Your password has been changed",
-    html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2 style="color: #333;">Password Updated</h2>
-        <p>Hello ${user.name || "User"},</p>
-        <p>Your password was successfully changed on ${new Date().toLocaleString()}.</p>
-        <p>If you didn't make this change, please contact us immediately.</p>
-      </div>
-    `,
-  });
+  await new Email(user, `${new Date().toLocaleString()}`)
+    .sendPasswordChangeNotification()
+    .catch((err) => console.log(err));
 
   const token = generateToken(user._id);
 
