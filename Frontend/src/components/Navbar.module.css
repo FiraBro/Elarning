@@ -1,0 +1,26 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f2f2f2;
+    box-shadow: inset;
+}
+
+.myCourse{
+    padding: 10px 15px;
+    border: none;
+    border-radius: 50px;
+    background-color: green;
+    color:#fff;
+    margin-right: 15px;
+    cursor: pointer;
+}
+.authentication{
+    padding: 10px 15px;
+    border: none;
+    border-radius: 50px;
+    background-color:black;
+    color:#fff;
+    margin-right: 15px;
+    cursor: pointer;
+}
