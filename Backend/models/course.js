@@ -9,6 +9,10 @@ const courseSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  catagory: {
+    type: String,
+    required: true,
+  },
   video: { type: String, required: false }, // URL or path to course video
   banner: { type: String, required: false }, // URL or path to course banner image
   createdAt: { type: Date, default: Date.now },
