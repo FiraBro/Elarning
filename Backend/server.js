@@ -4,12 +4,13 @@ const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const userRoutes = require("./routes/userRoutes");
+const cors = require("cors");
 const globalErrorHandler = require("./controllers/errorController");
 // const paymentRoutes = require('./routes/paymentRoutes');
 
 dotenv.config();
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
