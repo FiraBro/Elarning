@@ -1,46 +1,44 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import { courseService } from "../service/api";
 import styles from "./FeaturedCourse.module.css";
 
-const courses = [
-  {
-    id: 1,
-    title: "Full-Stack Web Development",
-    description:
-      "Learn to build modern web applications using React, Node.js, and databases.",
-    image: "/images/fullstack.jpg",
-  },
-  {
-    id: 2,
-    title: "Graphic Design Masterclass",
-    description:
-      "Master Adobe Photoshop, Illustrator, and design principles to create stunning visuals.",
-    image: "/images/graphic-design.jpg",
-  },
-  {
-    id: 3,
-    title: "Digital Marketing 101",
-    description:
-      "Explore SEO, social media marketing, and content strategies to grow any business.",
-    image: "/images/digital-marketing.jpg",
-  },
-];
-
 export default function FeaturedCourse() {
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await courseService.getAllCourses();
+
+        setCourses(response.data.courses);
+
+        console.log(response.data.courses);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <section className={styles.featuredSection}>
-      <h2 className={styles.title}>Featured Courses</h2>
-      <div className={styles.courseGrid}>
-        {courses.map(({ id, title, description, image }) => (
-          <div key={id} className={styles.courseCard}>
-            <img src={image} alt={title} className={styles.courseImage} />
-            <div className={styles.courseContent}>
-              <h3 className={styles.courseTitle}>{title}</h3>
-              <p className={styles.courseDescription}>{description}</p>
-              <button className={styles.learnMoreBtn}>Learn More</button>
+      {courses.length === 0 ? (
+        <p>Loading courses...</p>
+      ) : (
+        <div className={styles.courseGrid}>
+          {courses.map(({ id, title, description, image }) => (
+            <div key={id} className={styles.courseCard}>
+              <img src={image} alt={title} className={styles.courseImage} />
+              <div className={styles.courseContent}>
+                <h3 className={styles.courseTitle}>{title}</h3>
+                <p className={styles.courseDescription}>{description}</p>
+                <button className={styles.learnMoreBtn}>Learn More</button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
