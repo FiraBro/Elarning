@@ -1,0 +1,45 @@
+.howItWorksSection {
+  padding: 2rem;
+  text-align: center;
+}
+
+.howItWorksSection h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.step {
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.stepNumber {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.step h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.step p {
+  font-size: 0.9rem;
+  color: #777;
+}
