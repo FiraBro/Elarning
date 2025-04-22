@@ -13,6 +13,10 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  level: {
+    type: String,
+    default: "Beginner",
+  },
   video: { type: String, required: false }, // URL or path to course video
   banner: { type: String, required: false }, // URL or path to course banner image
   createdAt: { type: Date, default: Date.now },
