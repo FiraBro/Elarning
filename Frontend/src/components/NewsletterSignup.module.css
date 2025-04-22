@@ -1,0 +1,66 @@
+.newsletterSignup {
+  padding: 3rem 2rem;
+  background-color: #f0f4f8;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.content h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.content p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.signupForm {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.signupForm input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-right: 0.5rem;
+  width: 60%;
+}
+
+.signupForm button {
+  padding: 0.75rem 1.25rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.signupForm button:hover {
+  background-color: #0056b3;
+}
+
+.benefitsList {
+  list-style: none;
+  padding: 0;
+}
+
+.benefitsList li {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.benefitsList li span {
+  margin-right: 0.5rem;
+}
