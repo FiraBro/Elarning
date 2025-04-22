@@ -1,4 +1,4 @@
-const Course = require("../models/Course");
+const Course = require("../models/course");
 const APIFeatures = require("../utils/apiFeatures");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
@@ -8,7 +8,7 @@ const catchAsync = require("../utils/catchAsync");
  * @route   POST /api/courses
  * @access  Private/Instructor
  */
-const createCourse = catchAsync(async (req, res, next) => {
+exports.createCourse = catchAsync(async (req, res, next) => {
   const { title, description, price, category, level } = req.body;
 
   // Basic validation
@@ -43,10 +43,10 @@ const createCourse = catchAsync(async (req, res, next) => {
  * @route   GET /api/courses
  * @access  Public
  */
-
-const getCourses = catchAsync(async (req, res, next) => {
-  // 1) Build query
+exports.getCourses = catchAsync(async (req, res, next) => {
+  // 1) Build query with search support
   const features = new APIFeatures(Course.find(), req.query)
+    .search()
     .filter()
     .sort()
     .limitFields()
@@ -58,7 +58,7 @@ const getCourses = catchAsync(async (req, res, next) => {
     select: "name email avatar",
   });
 
-  // 3) Get total count for pagination
+  // 3) Get total count for pagination and filtering
   const total = await Course.countDocuments(features.filterQuery);
 
   res.status(200).json({
@@ -70,8 +70,3 @@ const getCourses = catchAsync(async (req, res, next) => {
     },
   });
 });
-
-module.exports = {
-  createCourse,
-  getCourses,
-};
