@@ -1,0 +1,46 @@
+.certificationsOutcomesSection {
+  padding: 2rem;
+  text-align: center;
+}
+
+.certificationsOutcomesSection h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.intro {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.outcomesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.outcome {
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: left;
+}
+
+.outcome h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.outcome p {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.conclusion {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 2rem;
+}
