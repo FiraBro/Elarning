@@ -1,22 +1,22 @@
 import React from "react";
-import { FaBookOpen } from "react-icons/fa";
-import style from "./Navbar.module.css";
+import styles from "./Navbar.module.css";
 
-// Logo component displaying the open book icon
-function Logo() {
-  return <FaBookOpen size={48} color="green" cursor='pointer' />;
-}
-
-export default function Navbar() {
-  return (
-    <div className={style.navbar}>
-      <div className={style.left}>
-        <Logo />
-      </div>
-      <div className={style.right}>
-        <button className={style.myCourse}>MyCourse</button>
-        <button className={style.authentication}>Login</button>
-      </div>
+const Navbar = () => (
+  <nav className={styles.navbar}>
+    <div className={styles.logo}>
+      <a href="/">E-Learning Platform</a>
     </div>
-  );
-}
+    <div className={styles.navLinks}>
+      <a href="/browse">Browse Courses</a>
+      <a href="/mycourse">My Courses</a>
+      <a href="/singup">Singup</a>
+      <a href="/login">Login</a>
+
+      <a href="/instructor" className={styles.signupButton}>
+        Sign Up
+      </a>
+    </div>
+  </nav>
+);
+
+export default Navbar;
