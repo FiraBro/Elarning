@@ -1,3 +1,33 @@
-*{
-    margin: 0;
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  background-color: whitesmoke;
+  gap: 30px;
+  padding: 50px;
+}
+.revenueTotal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+.total,
+.revenue {
+  background-color: #fff;
+  padding: 50px 150px;
+  border-radius: 20px;
+  font-size: 1.2rem;
+}
+.studentList {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: #fff;
+  border: 0.3px solid lightgray;
+  padding: 10px;
+}
+.studentListHeadTwo {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 0.3px solid lightgray;
+  padding-bottom: 10px;
 }
