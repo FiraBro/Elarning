@@ -1,0 +1,26 @@
+/* src/pages/LoginPage/LoginPage.module.css */
+.loginPage {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .loginPage h1 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .signupLink {
+    margin-top: 20px;
+    color: #666;
+  }
+  
+  .signupLink a {
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  
+  .signupLink a:hover {
+    text-decoration: underline;
+  }
