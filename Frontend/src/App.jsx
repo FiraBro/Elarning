@@ -22,9 +22,19 @@ import MycoursePage from "./pages/MycoursePage";
 import Dashboard from "./components/Dashboard";
 import Courses from "./components/Courses";
 import InstructorPage from "./pages/InstructorPage";
+import LoginPage from "./pages/LoginPage";
+import SingupPage from "./pages/SingupPage";
 
 export default function App() {
   const router = createBrowserRouter([
+    {
+      path: "login",
+      element: <LoginPage />,
+    },
+    {
+      path: "singup",
+      element: <SingupPage />,
+    },
     {
       path: "/",
       element: <HomePage />,
@@ -34,8 +44,8 @@ export default function App() {
       element: <MycoursePage />,
     },
     {
-      path:'/instructor',
-      element:<InstructorPage />
+      path: "/instructor",
+      element: <InstructorPage />,
     },
     {
       element: <Applayout />,
