@@ -1,19 +1,23 @@
-// src/pages/SignupPage/SignupPage.jsx
-import { useNavigate } from 'react-router-dom';
-// import AuthForm from '../../components/AuthForm/AuthForm';
-import AuthForm from '../components/AuthForm/AuthForm';
-import styles from './SingupPage.module.css';
+import { useNavigate } from "react-router-dom";
+import AuthForm from "../components/AuthForm/AuthForm";
+import { userService } from "../service/api";
+import styles from "./SingupPage.module.css";
 
-const SingnupPage = () => {
+const SignupPage = () => {
   const navigate = useNavigate();
 
   const handleSignup = async (credentials) => {
-    // Here you would typically make an API call to your backend
-    console.log('Signup with:', credentials);
-    // Simulate successful signup
-    setTimeout(() => {
-      navigate('/dashboard'); // Redirect after signup
-    }, 1000);
+    try {
+      const { data } = await userService.signup(credentials);
+      console.log(data.user);
+      if (data.user.role === "student") {
+        navigate("/");
+      } else if (data.user.role === "admin") {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      alert(error.response?.data?.error || "Signup failed. Please try again.");
+    }
   };
 
   return (
@@ -27,4 +31,4 @@ const SingnupPage = () => {
   );
 };
 
-export default SingnupPage;
+export default SignupPage;
