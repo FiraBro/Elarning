@@ -22,8 +22,9 @@ import MycoursePage from "./pages/MycoursePage";
 import Dashboard from "./components/Dashboard";
 import Courses from "./components/Courses";
 import InstructorPage from "./pages/InstructorPage";
-import LoginPage from "./pages/LoginPage";
 import SingupPage from "./pages/SingupPage";
+import LoginPage from "./pages/LoginPage";
+import Profile from "./components/Profile";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -42,6 +43,10 @@ export default function App() {
     {
       path: "mycourse",
       element: <MycoursePage />,
+    },
+    {
+      path:'profile',
+      element:<Profile />
     },
     {
       path: "/instructor",
