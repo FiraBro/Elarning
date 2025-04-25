@@ -1,0 +1,459 @@
+/* .course {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 10px;
+  background-color: whitesmoke;
+}
+
+.coursebg {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.headCourseOne {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.headCourseOne button {
+  padding: 10px 25px;
+  border: none;
+  background-color: #000;
+  color: #fff;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.headCourseOne button:hover {
+  background-color: #333;
+}
+
+.headCourseTwo {
+  display: grid;
+  grid-template-columns: 1fr 0.3fr 0.5fr 0.3fr;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  font-weight: 600;
+}
+
+.courseList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.courseItem {
+  display: grid;
+  grid-template-columns: 1fr 0.3fr 0.5fr 0.3fr;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.courseItem p {
+  margin: 0;
+  color: #666;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.formGroup input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.formGroup textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.error {
+  color: #e53935;
+  padding: 10px;
+  background: #ffebee;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+ */
+
+
+ /* Base Styles */
+.course {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 10px;
+  background-color: whitesmoke;
+  box-sizing: border-box;
+}
+
+.coursebg {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.headCourseOne {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .headCourseOne {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.addButton {
+  padding: 10px 25px;
+  border: none;
+  background-color: #000;
+  color: #fff;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+}
+
+.addButton:hover {
+  background-color: #333;
+}
+
+/* Course List */
+.gridHeader {
+  display: none;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  font-weight: 600;
+}
+.submitButton {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+@media (min-width: 768px) {
+  .gridHeader {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 15px;
+  }
+}
+
+.courseList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.courseItem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+
+@media (min-width: 768px) {
+  .courseItem {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    background: transparent;
+    padding: 15px 0;
+  }
+}
+
+.courseTitle {
+  font-weight: 600;
+  color: #333;
+}
+
+.mobileVisible {
+  display: block;
+  font-size: 14px;
+  color: #666;
+}
+
+.mobileHidden {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mobileVisible {
+    display: none;
+  }
+  
+  .mobileHidden {
+    display: block;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+@media (min-width: 768px) {
+  .actions {
+    margin-top: 0;
+  }
+}
+
+.editBtn {
+  padding: 6px 12px;
+  border: 1px solid #2196F3;
+  color: #2196F3;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.deleteBtn {
+  padding: 6px 12px;
+  border: 1px solid #e53935;
+  color: #e53935;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Form Styles */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formRow {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .formRow {
+    flex-direction: row;
+  }
+  
+  .formRow > * {
+    flex: 1;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus {
+  border-color: #2196F3;
+  outline: none;
+}
+
+.formGroup textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* File Uploads */
+.fileUpload {
+  margin-top: 5px;
+}
+
+.fileUpload input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  background: #f9f9f9;
+}
+
+.previewContainer {
+  margin-top: 15px;
+}
+
+.videoPreview {
+  width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+  background: #000;
+}
+
+.videoPreview video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.imagePreview {
+  max-width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+/* Progress Bar */
+.progressBar {
+  height: 20px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 15px 0;
+}
+
+.progressFill {
+  height: 100%;
+  background: #4CAF50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  transition: width 0.3s ease;
+}
+
+/* Error and Loading States */
+.error {
+  padding: 15px;
+  background: #ffebee;
+  color: #e53935;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.loading {
+  padding: 30px;
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .coursebg {
+    padding: 15px;
+  }
+  
+  .formGroup input,
+  .formGroup textarea,
+  .formGroup select {
+    padding: 10px;
+  }
+  
+  .actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .actions {
+    flex-direction: column;
+  }
+  
+  .editBtn,
+  .deleteBtn {
+    width: 100%;
+  }
+}
