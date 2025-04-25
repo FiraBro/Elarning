@@ -1,0 +1,87 @@
+.userContainer {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .userList {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1rem;
+  }
+  
+  .userCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .userInfo {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .role {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .deleteButton {
+    padding: 0.5rem 1rem;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .deleteButton:hover {
+    background: #c0392b;
+  }
+  
+  .loading {
+    padding: 2rem;
+    text-align: center;
+    color: #666;
+  }
+  
+  .error {
+    padding: 2rem;
+    text-align: center;
+    color: #e74c3c;
+    background: #ffebee;
+    border-radius: 8px;
+    margin: 2rem 0;
+  }
+  
+  @media (max-width: 768px) {
+    .userCard {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .userInfo {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .deleteButton {
+      align-self: flex-end;
+    }
+  }
+  
