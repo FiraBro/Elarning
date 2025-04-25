@@ -1,19 +1,3 @@
-// import React from "react";
-// import { Routes, Route } from "react-router-dom"; // <-- Import Routes and Route
-
-// export default function App() {
-//   return (
-//     <div className="app">
-//       <Routes>
-//         <Route path="/" element={<HomePage />} />
-//         <Route path="/mycourses" element={<MycoursePage />} />
-//         <Route path="/instructor/*" element={<InstructorPage />} />
-//         <Route path="*" element={<InstructorRoutes />} />
-//       </Routes>
-//     </div>
-//   );
-// }
-
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Applayout from "./iu/Applayout";
@@ -33,7 +17,7 @@ export default function App() {
       element: <LoginPage />,
     },
     {
-      path: "singup",
+      path: "signup",
       element: <SingupPage />,
     },
     {
@@ -45,8 +29,8 @@ export default function App() {
       element: <MycoursePage />,
     },
     {
-      path:'profile',
-      element:<Profile />
+      path: "profile",
+      element: <Profile />,
     },
     {
       path: "/instructor",
@@ -62,6 +46,10 @@ export default function App() {
         {
           path: "/course",
           element: <Courses />,
+        },
+        {
+          path:'user',
+          // element
         },
       ],
     },
