@@ -1,14 +1,14 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Applayout from "./iu/Applayout";
 import HomePage from "./pages/HomePage";
 import MycoursePage from "./pages/MycoursePage";
 import Dashboard from "./components/Dashboard";
-import Courses from "./components/Courses";
+import CourseController from "./components/CourseController";
 import InstructorPage from "./pages/InstructorPage";
 import SingupPage from "./pages/SingupPage";
 import LoginPage from "./pages/LoginPage";
 import Profile from "./components/Profile";
+import AdminLayout from "./iu/AdminLayout";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -37,18 +37,18 @@ export default function App() {
       element: <InstructorPage />,
     },
     {
-      element: <Applayout />,
+      element: <AdminLayout />,
       children: [
         {
-          path: "/dashboard",
+          path: "admin/dashboard",
           element: <Dashboard />,
         },
         {
-          path: "/course",
-          element: <Courses />,
+          path: "admin/courses",
+          element: <CourseController />,
         },
         {
-          path:'user',
+          path: "admin/users",
           // element
         },
       ],
