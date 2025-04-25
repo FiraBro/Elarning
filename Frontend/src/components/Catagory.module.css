@@ -1,0 +1,24 @@
+.catagory {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.browseCourse {
+  display: flex;
+  gap:50px;
+  justify-content: space-evenly;
+}
+.browseCourse button{
+  padding: 15px 25px;
+  border: none;
+  border-radius: 10px;
+}
+.browseCourse .browseBtn {
+  background-color: #1d3557;
+  color: #fff;
+}
+.browseCourse .startLearning{
+  color: #000;
+  background-color: #fff;
+}
+
