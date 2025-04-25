@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { userService } from "../service/api";
 import styles from "./Profile.module.css";
@@ -8,7 +8,6 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updating, setUpdating] = useState(false);
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,13 +15,13 @@ const Profile = () => {
   });
 
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const { data } = await userService.getMe();
         setUser(data.user);
-        // console.log(data.user);
         setFormData({
           name: data.user.name || "",
           email: data.user.email || "",
@@ -64,10 +63,17 @@ const Profile = () => {
 
     try {
       const data = await userService.updateUser(formData);
-      console.log(data.user);
       setUser(data.user);
       alert("Profile updated successfully!");
-      setFormData((prev) => ({ ...prev, photo: null }));
+      // Keep name and email, only clear photo
+      setFormData((prev) => ({
+        ...prev,
+        photo: null,
+      }));
+      // Clear the file input field visually
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (err) {
       setError(err.response?.data?.message || err.message);
     } finally {
@@ -109,7 +115,9 @@ const Profile = () => {
           <div className={styles.avatar}>
             {user?.photo ? (
               <img
-                src={`http://localhost:5000/img/users/${user.photo}`}
+                src={`http://localhost:5000/img/users/${
+                  user.photo
+                }?${new Date().getTime()}`}
                 alt={user.name}
                 className={styles.avatarImage}
               />
@@ -185,6 +193,7 @@ const Profile = () => {
                 accept="image/*"
                 onChange={handleChange}
                 disabled={updating}
+                ref={fileInputRef}
               />
             </label>
 
