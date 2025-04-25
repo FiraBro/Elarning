@@ -1,3 +1,176 @@
-*{
-  margin: 0;
+/* 
+
+.sidebar {
+  width: 200px;
+  height: 100vh;
+  background: #2c3e50;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+.link {
+  padding: 16px 32px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.link.active,
+.link:hover {
+  background: #34495e;
+}  */
+
+/* Base Styles */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background: #2c3e50;
+  color: #fff;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+.sidebarContent {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebarTitle {
+  color: #fff;
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.link {
+  padding: 12px 15px;
+  color: #ecf0f1;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.active {
+  background: #3498db;
+  color: white;
+}
+
+/* Mobile Menu Button */
+.mobileMenuButton {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1100;
+  background: #2c3e50;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: none;
+}
+
+.hamburger {
+  width: 25px;
+  height: 20px;
+  position: relative;
+}
+
+.hamburger span {
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.hamburgerTop {
+  top: 0;
+}
+
+.hamburgerMiddle {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hamburgerBottom {
+  bottom: 0;
+}
+
+.hamburgerTopActive {
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.hamburgerMiddleActive {
+  opacity: 0;
+}
+
+.hamburgerBottomActive {
+  bottom: 50%;
+  transform: translateY(50%) rotate(-45deg);
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: 280px;
+  }
+
+  .sidebar.hidden {
+    transform: translateX(-100%);
+  }
+
+  .sidebar:not(.hidden) {
+    transform: translateX(0);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .mobileMenuButton {
+    display: block;
+  }
+}
+
+/* Tablet Landscape */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sidebar {
+    width: 220px;
+  }
 }
