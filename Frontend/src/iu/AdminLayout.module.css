@@ -1,11 +1,33 @@
 .layout {
-    display: flex;
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  transition: margin 0.3s ease;
+  margin-left: 250px; /* Match sidebar width */
+  min-height: calc(100vh - 40px);
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
   }
+
   .content {
-    margin-left: 200px;
-    padding: 32px;
-    width: 100%;
-    min-height: 100vh;
-    background: #f5f6fa;
+    margin-left: 0;
+    padding: 20px 15px;
+    padding-top: 70px; /* Space for mobile menu button */
   }
-  
+}
+
+/* Tablet landscape */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .content {
+    margin-left: 220px; /* Matches tablet sidebar width */
+  }
+}
