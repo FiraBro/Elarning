@@ -9,6 +9,7 @@ import CertificationsOutcomesSection from "../components/CertificationsOutcomesS
 import NewsletterSignup from "../components/NewsletterSignup";
 import Footer from "../components/Footer";
 import FeaturedInstructors from "../components/FeaturedInstructors";
+import CourseCategoriesSection from "../components/CourseCategoriesSection";
 
 export default function HomePage() {
   return (
@@ -20,6 +21,7 @@ export default function HomePage() {
       <BenefitsSection />
       <HowItWorksSection />
       <CertificationsOutcomesSection />
+      <CourseCategoriesSection />
       <FeaturedInstructors />
       <NewsletterSignup />
       <Footer />
