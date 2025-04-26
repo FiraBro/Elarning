@@ -9,6 +9,7 @@ import SingupPage from "./pages/SingupPage";
 import LoginPage from "./pages/LoginPage";
 import Profile from "./components/Profile";
 import AdminLayout from "./iu/AdminLayout";
+import UserControl from "./components/UserController";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -49,7 +50,7 @@ export default function App() {
         },
         {
           path: "admin/users",
-          // element
+          element:<UserControl />
         },
       ],
     },
