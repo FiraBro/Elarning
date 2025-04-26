@@ -40,17 +40,36 @@ const filterObj = (obj, allowedFields) => {
   return newObj;
 };
 
+// exports.getAllUser = catchAsync(async (req, res, next) => {
+//   const users = await User.find();
+//   if (!users) {
+//     return next(new AppError("No user is found please try again later!", 400));
+//   }
+//   res.status(200).json({
+//     status: "success",
+//     length: users.length,
+//     data: {
+//       users,
+//     },
+//   });
+// });
+// controllers/userController.js
 exports.getAllUser = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-  if (!users) {
-    return next(new AppError("No user is found please try again later!", 400));
+  const users = await User.find().select("-__v"); // Remove version key from response
+
+  // Proper empty array check
+  if (users.length === 0) {
+    return res.status(200).json({
+      status: "success",
+      message: "No users found",
+      data: { users: [] },
+    });
   }
+
   res.status(200).json({
     status: "success",
-    length: users.length,
-    data: {
-      users,
-    },
+    results: users.length,
+    data: { users },
   });
 });
 
@@ -104,7 +123,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
-  await User.findByIdAndDelete(req.user.id, { active: false });
+  await User.findByIdAndUpdate(req.user.id, { active: false });
   res.status(200).json({
     status: "success",
     data: null,
@@ -128,5 +147,3 @@ exports.createUser = (req, res) => {
     message: "This route is not defined! Please use /register instead",
   });
 };
-
-
