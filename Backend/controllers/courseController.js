@@ -70,3 +70,56 @@ exports.getCourses = catchAsync(async (req, res, next) => {
     },
   });
 });
+exports.trackEnrollment = catchAsync(async (req, res, next) => {
+  const course = await Course.findById(req.params.courseId);
+
+  // Check if course exists
+  if (!course) return next(new AppError("Course not found", 404));
+
+  // Prevent duplicate enrollments
+  if (course.students.includes(req.user.id)) {
+    return next(new AppError("Already enrolled", 400));
+  }
+
+  // Update course metrics
+  course.students.push(req.user.id);
+  course.enrollmentCount += 1;
+  await course.save();
+
+  // Update user's course list (optional)
+  await User.findByIdAndUpdate(req.user.id, {
+    $addToSet: { purchasedCourses: course._id },
+  });
+
+  next(); // Proceed to payment processing
+});
+
+exports.getCourseMetrics = catchAsync(async (req, res) => {
+  const metrics = await Course.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalCourses: { $sum: 1 },
+        totalRevenue: { $sum: "$price" },
+        totalStudents: { $sum: { $size: "$students" } },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        totalCourses: 1,
+        totalRevenue: 1,
+        totalStudents: 1,
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: "success",
+    data: metrics[0] || {
+      totalCourses: 0,
+      totalRevenue: 0,
+      totalStudents: 0,
+    },
+  });
+});
