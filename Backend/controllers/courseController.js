@@ -8,20 +8,26 @@ const catchAsync = require("../utils/catchAsync");
  * @route   POST /api/courses
  * @access  Private/Instructor
  */
+
 exports.createCourse = catchAsync(async (req, res, next) => {
   const { title, description, price, category, level } = req.body;
+  const video = req.files["video"] ? req.files["video"][0].filename : null; // Access the uploaded file via req.file
+  const banner = req.files["banner"] ? req.files["banner"][0].filename : null;
 
   // Basic validation
-  if (!title || !description || !price) {
-    return next(new AppError("Title, description and price are required", 400));
+  if (!title || !description || !price || !video) {
+    return next(
+      new AppError("Title, description, video and price are required", 400)
+    );
   }
-
   // Create course with additional metadata
   const course = await Course.create({
     title,
     description,
     shortDescription: description.substring(0, 160),
     price,
+    video: video, // Save the filename or path to the database
+    banner: banner,
     instructor: req.user.id,
     category: category || "Other",
     level: level || "Beginner",
@@ -29,7 +35,6 @@ exports.createCourse = catchAsync(async (req, res, next) => {
     learningOutcomes: req.body.learningOutcomes || [],
     tags: req.body.tags || [],
   });
-
   res.status(201).json({
     status: "success",
     data: {
@@ -94,6 +99,35 @@ exports.trackEnrollment = catchAsync(async (req, res, next) => {
   next(); // Proceed to payment processing
 });
 
+// exports.getCourseMetrics = catchAsync(async (req, res) => {
+//   const metrics = await Course.aggregate([
+//     {
+//       $group: {
+//         _id: null,
+//         totalCourses: { $sum: 1 },
+//         totalRevenue: { $sum: "$price" },
+//         totalStudents: { $sum: { $size: "$students" } },
+//       },
+//     },
+//     {
+//       $project: {
+//         _id: 0,
+//         totalCourses: 1,
+//         totalRevenue: 1,
+//         totalStudents: 1,
+//       },
+//     },
+//   ]);
+
+//   res.status(200).json({
+//     status: "success",
+//     data: metrics[0] || {
+//       totalCourses: 0,
+//       totalRevenue: 0,
+//       totalStudents: 0,
+//     },
+//   });
+// });
 exports.getCourseMetrics = catchAsync(async (req, res) => {
   const metrics = await Course.aggregate([
     {
@@ -101,7 +135,11 @@ exports.getCourseMetrics = catchAsync(async (req, res) => {
         _id: null,
         totalCourses: { $sum: 1 },
         totalRevenue: { $sum: "$price" },
-        totalStudents: { $sum: { $size: "$students" } },
+        totalStudents: {
+          $sum: {
+            $size: { $ifNull: ["$students", []] },
+          },
+        },
       },
     },
     {
