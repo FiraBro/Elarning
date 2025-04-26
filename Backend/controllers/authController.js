@@ -47,7 +47,7 @@ exports.register = catchAsync(async (req, res, next) => {
   });
 
   // 4) Generate token
-  const token = generateToken(newUser._id);
+  const token = generateToken(newUser);
 
   // 5) Remove password from output
   newUser.password = undefined;
@@ -106,7 +106,7 @@ exports.login = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 5) Generate token
-  const token = generateToken(user._id);
+  const token = generateToken(user);
 
   // 6) Remove sensitive data
   user.password = undefined;
