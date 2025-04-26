@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
@@ -10,7 +11,14 @@ const globalErrorHandler = require("./controllers/errorController");
 
 dotenv.config();
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Explicit frontend origin
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+  })
+);
+app.use("/img/users", express.static(path.join(__dirname, "upload/userImage")));
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
