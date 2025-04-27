@@ -11,7 +11,8 @@ const globalErrorHandler = require("./controllers/errorController");
 
 dotenv.config();
 const app = express();
-// app.use(express.urlencoded({ extended: true })); //  For parsing URL-encoded dat
+app.use(express.urlencoded({ extended: true })); //  For parsing URL-encoded dat
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(
   cors({
     origin: "http://localhost:5173", // Explicit frontend origin
