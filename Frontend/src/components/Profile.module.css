@@ -25,10 +25,17 @@
   gap: 2rem;
   margin-bottom: 2rem;
 }
-
-.avatar {
-  width: 80px;
-  height: 80px;
+.homeBtn{
+  background-color: green;
+  border: none;
+  border-radius: 50px;
+  padding: 6px 9px;
+  color: #fff;
+  cursor: pointer;
+}
+.avatar img {
+  width: 100px;
+  height: 100px;
   background-color: #3498db;
   color: white;
   border-radius: 50%;
