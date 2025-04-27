@@ -1,13 +1,22 @@
 const express = require("express");
-// const { createCourse, getCourses } = require("../controllers/courseController");
 const courseController = require("../controllers/courseController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const adminMiddleware = require("../middlewares/adminMiddleware");
 const authController = require("../controllers/authController");
-const multer = require("multer");
-const upload = multer({ dest: "uploads/" }); // Specify the upload directory
+const upload = require("../middlewares/multer");
 
 const router = express.Router();
+
+// Update Course Route
+router.patch(
+  "/:id",
+  upload.fields([
+    { name: "video", maxCount: 1 },
+    { name: "banner", maxCount: 1 },
+  ]),
+  courseController.updateCourse
+);
+
 // Route definition with multer middleware
 router.post(
   "/",
@@ -21,7 +30,18 @@ router.post(
 );
 
 router.get("/", courseController.getCourses);
+router.get(
+  "/enrolled",
+  authController.protect,
+  courseController.getEnrolledCourses
+);
 router.get("/metrics", courseController.getCourseMetrics);
+router.delete(
+  "/:id",
+  authMiddleware,
+  adminMiddleware,
+  courseController.deleteCourse
+);
 router.post(
   "/:courseId/enroll",
   authController.protect,
