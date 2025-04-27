@@ -3,12 +3,10 @@ const mongoose = require("mongoose");
 const courseSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  students: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "User",
-    },
-  ],
+  students: {
+    type: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
+    default: [],
+  },
   enrollmentCount: {
     type: Number,
     default: 0,
@@ -22,16 +20,18 @@ const courseSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  catagory: {
+  category: {
+    // fixed typo here
     type: String,
     required: false,
   },
   level: {
     type: String,
+    enum: ["Beginner", "Intermediate", "Advanced"],
     default: "Beginner",
   },
   video: { type: String, required: true }, // URL or path to course video
-  banner: { type: String, required: true }, // URL or path to course banner image
+  banner: { type: String, required: false }, // optional banner
   createdAt: { type: Date, default: Date.now },
 });
 
