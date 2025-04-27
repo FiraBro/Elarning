@@ -57,9 +57,8 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className={styles.navLinks}>
           <Link to="/browse">Browse Courses</Link>
-          {isLoggedIn || userRole === "admin" ? (
-            ""
-          ) : (
+
+          {isLoggedIn && userRole === "student" && (
             <Link to="/mycourse">My Courses</Link>
           )}
 
@@ -84,7 +83,7 @@ const Navbar = () => {
           {/* Show Become Instructor only if logged in and userRole is "admin" */}
           {isLoggedIn && userRole === "admin" && (
             <Link to="/admin/dashboard" className={styles.instructorButton}>
-              Become Instructor
+              Admin Dashboard
             </Link>
           )}
         </div>
@@ -113,9 +112,11 @@ const Navbar = () => {
         <Link to="/browse" onClick={toggleMobileMenu}>
           Browse Courses
         </Link>
-        <Link to="/mycourse" onClick={toggleMobileMenu}>
-          My Courses
-        </Link>
+        {isLoggedIn && userRole === "student" && (
+          <Link to="/mycourse" onClick={toggleMobileMenu}>
+            My Courses
+          </Link>
+        )}
 
         {isLoggedIn ? (
           <>
@@ -150,7 +151,7 @@ const Navbar = () => {
             onClick={toggleMobileMenu}
             className={styles.instructorButton}
           >
-            Become Instructor
+            Admin Dashboard
           </Link>
         )}
       </div>
