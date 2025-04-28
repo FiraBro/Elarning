@@ -37,7 +37,11 @@ router.post(
 );
 
 router.get("/", courseController.getCourses);
-
+router.get(
+  "/:courseId/lessons",
+  authController.protect,
+  courseController.getCourseLessons
+);
 router.get(
   "/enrolled",
   authController.protect,
