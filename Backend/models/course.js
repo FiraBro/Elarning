@@ -17,6 +17,9 @@ const courseSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  enrolledStudents: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] },
+  ],
   category: { type: String },
   level: {
     type: String,
