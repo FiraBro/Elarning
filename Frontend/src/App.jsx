@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import Profile from "./components/Profile";
 import AdminLayout from "./iu/AdminLayout";
 import UserControl from "./components/UserController";
+import CourseLessons from "./components/CourseLesson/CourseLessons";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -28,6 +29,10 @@ export default function App() {
     {
       path: "mycourse",
       element: <MycoursePage />,
+    },
+    {
+      path: "courses/:courseId/lessons",
+      element: <CourseLessons />, // Add CourseLessons route
     },
     {
       path: "profile",
@@ -50,7 +55,7 @@ export default function App() {
         },
         {
           path: "admin/users",
-          element:<UserControl />
+          element: <UserControl />,
         },
       ],
     },
