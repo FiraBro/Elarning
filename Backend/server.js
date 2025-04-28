@@ -42,12 +42,14 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/users", userRoutes);
 
 // Handle unknown routes
+
+// app.all("/*splat", (req, res, next) => {
+//   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+// });
+
 // app.all("*", (req, res, next) => {
 //   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 // });
-app.all("/*splat", (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
-});
 
 // Global error handler
 app.use(globalErrorHandler);
