@@ -11,7 +11,6 @@ const router = express.Router();
 router.patch(
   "/:id",
   upload.fields([
-    // { name: "video", maxCount: 1 },
     { name: "banner", maxCount: 1 },
     { name: "lessonVideos", maxCount: 20 },
   ]),
