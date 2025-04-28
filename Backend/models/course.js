@@ -11,27 +11,25 @@ const courseSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  price: {
-    type: Number,
-    required: true,
-  },
+  price: { type: Number, required: true },
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  category: {
-    // fixed typo here
-    type: String,
-    required: false,
-  },
+  category: { type: String },
   level: {
     type: String,
     enum: ["Beginner", "Intermediate", "Advanced"],
     default: "Beginner",
   },
-  video: { type: String, required: true }, // URL or path to course video
-  banner: { type: String, required: false }, // optional banner
+  lessons: [
+    {
+      title: { type: String, required: true },
+      videoUrl: { type: String, required: true },
+    },
+  ],
+  banner: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
 
