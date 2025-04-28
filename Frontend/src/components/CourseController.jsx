@@ -1,214 +1,6 @@
-// import React, { useEffect, useState } from "react";
-// import style from "./CourseController.module.css";
-
-// const API_URL = "https://your-backend.com/api/courses";
-
-// const CourseController = () => {
-//   const [courses, setCourses] = useState([]);
-//   const [formData, setFormData] = useState({
-//     title: "",
-//     description: "",
-//     price: "",
-//     category: "",
-//     level: "Beginner",
-//     video: "",
-//     banner: "",
-//     instructor: "", // This should be populated from your auth context or user selection
-//   });
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-
-//   useEffect(() => {
-//     const fetchCourses = async () => {
-//       try {
-//         const res = await fetch(API_URL);
-//         const data = await res.json();
-//         setCourses(data);
-//       } catch (err) {
-//         setError("Failed to load courses");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchCourses();
-//   }, []);
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({
-//       ...prev,
-//       [name]: value,
-//     }));
-//   };
-
-//   const handleAdd = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const res = await fetch(API_URL, {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({
-//           ...formData,
-//           price: Number(formData.price),
-//           instructor: "65d4a5e1c1b9a9b9b9b9b9b9", // Replace with actual instructor ID
-//         }),
-//       });
-
-//       if (!res.ok) throw new Error("Failed to add course");
-
-//       const newCourse = await res.json();
-//       setCourses([...courses, newCourse]);
-//       setFormData({
-//         title: "",
-//         description: "",
-//         price: "",
-//         category: "",
-//         level: "Beginner",
-//         video: "",
-//         banner: "",
-//         instructor: "",
-//       });
-//     } catch (err) {
-//       setError(err.message);
-//     }
-//   };
-
-//   return (
-//     <div className={style.course}>
-//       <div className={style.coursebg}>
-//         <div className={style.headCourseOne}>
-//           <h2>Course Management</h2>
-//           <button
-//             className={style.addButton}
-//             onClick={() =>
-//               document
-//                 .getElementById("addForm")
-//                 ?.scrollIntoView({ behavior: "smooth" })
-//             }
-//           >
-//             Add New Course
-//           </button>
-//         </div>
-
-//         {error && <div className={style.error}>{error}</div>}
-
-//         {loading ? (
-//           <div className={style.loading}>Loading courses...</div>
-//         ) : (
-//           <div className={style.courseList}>
-//             <div className={style.headCourseTwo}>
-//               <span>Title</span>
-//               <span>Category</span>
-//               <span>Level</span>
-//               <span>Price</span>
-//               <span>Actions</span>
-//             </div>
-
-//             {courses.map((course) => (
-//               <div key={course._id} className={style.courseItem}>
-//                 <strong>{course.title}</strong>
-//                 <span>{course.category}</span>
-//                 <span>{course.level}</span>
-//                 <span>${course.price.toFixed(2)}</span>
-//                 <div className={style.actions}>
-//                   <button>Edit</button>
-//                   <button>Delete</button>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         )}
-//       </div>
-
-//       <div id="addForm" className={style.coursebg}>
-//         <h3>Add New Course</h3>
-//         <form onSubmit={handleAdd} className={style.form}>
-//           <div className={style.formGroup}>
-//             <label>Title</label>
-//             <input
-//               name="title"
-//               value={formData.title}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-
-//           <div className={style.formGroup}>
-//             <label>Description</label>
-//             <textarea
-//               name="description"
-//               value={formData.description}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-
-//           <div className={style.formGroup}>
-//             <label>Price ($)</label>
-//             <input
-//               type="number"
-//               name="price"
-//               value={formData.price}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-
-//           <div className={style.formGroup}>
-//             <label>Category</label>
-//             <input
-//               name="category"
-//               value={formData.category}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-
-//           <div className={style.formGroup}>
-//             <label>Level</label>
-//             <select name="level" value={formData.level} onChange={handleChange}>
-//               <option value="Beginner">Beginner</option>
-//               <option value="Intermediate">Intermediate</option>
-//               <option value="Advanced">Advanced</option>
-//             </select>
-//           </div>
-
-//           <div className={style.formGroup}>
-//             <label>Video URL</label>
-//             <input
-//               type="url"
-//               name="video"
-//               value={formData.video}
-//               onChange={handleChange}
-//             />
-//           </div>
-
-//           <div className={style.formGroup}>
-//             <label>Banner Image URL</label>
-//             <input
-//               type="url"
-//               name="banner"
-//               value={formData.banner}
-//               onChange={handleChange}
-//             />
-//           </div>
-
-//           <button type="submit" className={style.submitButton}>
-//             Create Course
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CourseController;
-
-
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import style from "./CourseController.module.css";
-
-const API_URL = "https://your-backend.com/api/courses";
+import { courseService } from "../service/api";
 
 const CourseController = () => {
   const [courses, setCourses] = useState([]);
@@ -218,103 +10,175 @@ const CourseController = () => {
     price: "",
     category: "",
     level: "Beginner",
-    video: null,
+    lessonVideos: [], // Array of { file, preview, title }
     banner: null,
     bannerPreview: "",
-    videoPreview: ""
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [editingCourseId, setEditingCourseId] = useState(null);
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const res = await fetch(API_URL);
-        const data = await res.json();
-        setCourses(data);
-      } catch (err) {
-        setError("Failed to load courses");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchCourses();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const { data } = await courseService.getAllCourses();
+      setCourses(data.courses);
+    } catch (err) {
+      setError("Failed to load courses");
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle video title change
+  const handleVideoTitleChange = (index, value) => {
+    setFormData((prev) => {
+      const updatedVideos = [...prev.lessonVideos];
+      updatedVideos[index] = { ...updatedVideos[index], title: value };
+      return { ...prev, lessonVideos: updatedVideos };
+    });
+  };
+
+  // Handle multiple video files selection
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    const file = files[0];
-    
-    if (name === "video" && file) {
-      setFormData(prev => ({
+    if (name === "lessonVideos") {
+      const fileArray = Array.from(files);
+      const newVideos = fileArray.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+        title: "",
+      }));
+      setFormData((prev) => ({
         ...prev,
-        video: file,
-        videoPreview: URL.createObjectURL(file)
+        lessonVideos: newVideos,
       }));
     }
+    if (name === "banner" && files[0]) {
+      setFormData((prev) => ({
+        ...prev,
+        banner: files[0],
+        bannerPreview: URL.createObjectURL(files[0]),
+      }));
+    }
+  };
 
-    if (name === "banner" && file) {
-      setFormData(prev => ({
-        ...prev,
-        banner: file,
-        bannerPreview: URL.createObjectURL(file)
-      }));
-    }
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      description: "",
+      price: "",
+      category: "",
+      level: "Beginner",
+      lessonVideos: [],
+      banner: null,
+      bannerPreview: "",
+    });
+    setUploadProgress(0);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    
+
+    // Validate required fields
+    if (!formData.title.trim()) {
+      setError("Title is required.");
+      return;
+    }
+    if (!formData.description.trim()) {
+      setError("Description is required.");
+      return;
+    }
+    if (
+      !formData.price ||
+      isNaN(formData.price) ||
+      Number(formData.price) < 0
+    ) {
+      setError("A valid price is required.");
+      return;
+    }
+    if (formData.lessonVideos.length === 0) {
+      setError("At least one lesson video is required.");
+      return;
+    }
+    if (formData.lessonVideos.some((video) => !video.title.trim())) {
+      setError("All videos must have a title.");
+      return;
+    }
+
     const form = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value && typeof value !== 'object') form.append(key, value);
-      if (value instanceof File) form.append(key, value);
+    form.append("title", formData.title);
+    form.append("description", formData.description);
+    form.append("price", formData.price);
+    form.append("category", formData.category);
+    form.append("level", formData.level);
+
+    if (formData.banner) {
+      form.append("banner", formData.banner);
+    }
+
+    formData.lessonVideos.forEach((video, index) => {
+      form.append("lessonVideos", video.file); // Use "lessonVideos" instead of "lessonVideos[]"
+      form.append(`lessonTitles[${index}]`, video.title);
     });
 
-    try {
-      const xhr = new XMLHttpRequest();
-      xhr.upload.addEventListener("progress", (event) => {
-        if (event.lengthComputable) {
-          const progress = Math.round((event.loaded / event.total) * 100);
-          setUploadProgress(progress);
-        }
-      });
-
-      xhr.open("POST", API_URL, true);
-      xhr.setRequestHeader("Authorization", `Bearer ${localStorage.getItem('token')}`);
-      
-      xhr.onload = () => {
-        if (xhr.status === 201) {
-          const newCourse = JSON.parse(xhr.response);
-          setCourses([...courses, newCourse]);
-          setFormData({
-            title: "",
-            description: "",
-            price: "",
-            category: "",
-            level: "Beginner",
-            video: null,
-            banner: null,
-            bannerPreview: "",
-            videoPreview: ""
-          });
-          setUploadProgress(0);
-        } else {
-          setError(xhr.responseText || "Upload failed");
-        }
-      };
-
-      xhr.send(form);
-    } catch (err) {
-      setError(err.message);
+    // Debug FormData
+    for (let [key, value] of form.entries()) {
+      console.log(`${key}:`, value);
     }
+
+    try {
+      if (editingCourseId) {
+        await courseService.updateCourse(editingCourseId, form);
+      } else {
+        await courseService.createCourse(form, setUploadProgress);
+      }
+      const { data } = await courseService.getAllCourses();
+      setCourses(data.courses);
+      resetForm();
+      setEditingCourseId(null);
+    } catch (err) {
+      setError(err.message || "Operation failed.");
+      setUploadProgress(0);
+    }
+  };
+
+  const handleDelete = async (courseId) => {
+    if (!window.confirm("Are you sure you want to delete this course?")) return;
+    try {
+      await courseService.deleteCourse(courseId);
+      setCourses((prevCourses) =>
+        prevCourses.filter((course) => course._id !== courseId)
+      );
+    } catch (err) {
+      setError(err.message || "Failed to delete course");
+    }
+  };
+
+  const handleEdit = (course) => {
+    setEditingCourseId(course._id);
+    setFormData({
+      title: course.title || "",
+      description: course.description || "",
+      price: course.price || "",
+      category: course.category || "",
+      level: course.level || "Beginner",
+      lessonVideos: [],
+      banner: null,
+      bannerPreview: course.bannerUrl || "",
+    });
+    document.getElementById("addForm")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -322,9 +186,15 @@ const CourseController = () => {
       <div className={style.coursebg}>
         <div className={style.headCourseOne}>
           <h2>Course Management</h2>
-          <button 
+          <button
             className={style.addButton}
-            onClick={() => document.getElementById('addForm')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => {
+              resetForm();
+              setEditingCourseId(null);
+              document
+                .getElementById("addForm")
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
           >
             Add New Course
           </button>
@@ -340,19 +210,30 @@ const CourseController = () => {
               <span>Title</span>
               <span className={style.mobileHidden}>Category</span>
               <span>Level</span>
-              <span className={style.mobileHidden}>Price</span>
+              <span>Price</span>
               <span>Actions</span>
             </div>
-            
-            {courses.map(course => (
+            {courses.map((course) => (
               <div key={course._id} className={style.courseItem}>
                 <div className={style.courseTitle}>{course.title}</div>
                 <div className={style.mobileHidden}>{course.category}</div>
                 <div>{course.level}</div>
-                <div className={style.mobileHidden}>${course.price?.toFixed(2)}</div>
+                <div className={style.mobileHidden}>
+                  ${course.price?.toFixed(2)}
+                </div>
                 <div className={style.actions}>
-                  <button className={style.editBtn}>Edit</button>
-                  <button className={style.deleteBtn}>Delete</button>
+                  <button
+                    className={style.editBtn}
+                    onClick={() => handleEdit(course)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className={style.deleteBtn}
+                    onClick={() => handleDelete(course._id)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             ))}
@@ -361,7 +242,9 @@ const CourseController = () => {
       </div>
 
       <div id="addForm" className={style.coursebg}>
-        <h3>Add New Course</h3>
+        <h3>
+          {editingCourseId ? `Edit "${formData.title}"` : "Add New Course"}
+        </h3>
         <form onSubmit={handleSubmit} className={style.form}>
           <div className={style.formRow}>
             <div className={style.formGroup}>
@@ -373,7 +256,6 @@ const CourseController = () => {
                 required
               />
             </div>
-
             <div className={style.formGroup}>
               <label>Price ($)*</label>
               <input
@@ -398,7 +280,6 @@ const CourseController = () => {
                 required
               />
             </div>
-
             <div className={style.formGroup}>
               <label>Level</label>
               <select
@@ -424,47 +305,61 @@ const CourseController = () => {
             />
           </div>
 
-          <div className={style.formRow}>
-            <div className={style.formGroup}>
-              <label>Course Video*</label>
-              <input
-                type="file"
-                name="video"
-                onChange={handleFileChange}
-                accept="video/*"
-                required
-              />
-              {formData.videoPreview && (
-                <div className={style.videoPreview}>
-                  <video width="100%" controls>
-                    <source src={formData.videoPreview} type={formData.video?.type} />
+          <div className={style.formGroup}>
+            <label>Course Videos* (Select multiple)</label>
+            <input
+              type="file"
+              name="lessonVideos"
+              multiple
+              accept="video/*"
+              onChange={handleFileChange}
+              required={!editingCourseId && formData.lessonVideos.length === 0}
+            />
+          </div>
+
+          {formData.lessonVideos.length > 0 && (
+            <div className={style.videoList}>
+              {formData.lessonVideos.map((video, idx) => (
+                <div key={idx} className={style.videoWithTitle}>
+                  <label>Video {idx + 1} Title*</label>
+                  <input
+                    type="text"
+                    value={video.title}
+                    onChange={(e) =>
+                      handleVideoTitleChange(idx, e.target.value)
+                    }
+                    placeholder={`Video ${idx + 1} title`}
+                    required
+                  />
+                  <video width="100%" controls className={style.videoPreview}>
+                    <source src={video.preview} />
                   </video>
                 </div>
-              )}
+              ))}
             </div>
+          )}
 
-            <div className={style.formGroup}>
-              <label>Banner Image</label>
-              <input
-                type="file"
-                name="banner"
-                onChange={handleFileChange}
-                accept="image/*"
+          <div className={style.formGroup}>
+            <label>Banner Image</label>
+            <input
+              type="file"
+              name="banner"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            {formData.bannerPreview && (
+              <img
+                src={formData.bannerPreview}
+                alt="Banner preview"
+                className={style.imagePreview}
               />
-              {formData.bannerPreview && (
-                <img 
-                  src={formData.bannerPreview} 
-                  alt="Banner preview"
-                  className={style.imagePreview}
-                />
-              )}
-            </div>
+            )}
           </div>
 
           {uploadProgress > 0 && (
             <div className={style.progressBar}>
-              <div 
-                className={style.progressFill} 
+              <div
+                className={style.progressFill}
                 style={{ width: `${uploadProgress}%` }}
               >
                 {uploadProgress}%
@@ -472,13 +367,29 @@ const CourseController = () => {
             </div>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={style.submitButton}
             disabled={uploadProgress > 0 && uploadProgress < 100}
           >
-            {uploadProgress > 0 ? 'Uploading...' : 'Create Course'}
+            {uploadProgress > 0
+              ? "Uploading..."
+              : editingCourseId
+              ? "Update Course"
+              : "Create Course"}
           </button>
+          {editingCourseId && (
+            <button
+              type="button"
+              className={style.cancelButton}
+              onClick={() => {
+                resetForm();
+                setEditingCourseId(null);
+              }}
+            >
+              Cancel Edit
+            </button>
+          )}
         </form>
       </div>
     </div>
