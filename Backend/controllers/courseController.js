@@ -12,30 +12,38 @@ const User = require("../models/user");
 
 exports.createCourse = catchAsync(async (req, res, next) => {
   const { title, description, price, category, level } = req.body;
-  const video = req.files["video"] ? req.files["video"][0].filename : null; // Access the uploaded file via req.file
-  const banner = req.files["banner"] ? req.files["banner"][0].filename : null;
+  const banner = req.files?.["banner"] ? req.files["banner"][0].filename : null;
+  const lessonVideos = req.files?.["lessonVideos"] || [];
 
-  // Basic validation
-  if (!title || !description || !price || !video) {
+  if (!title || !description || !price || lessonVideos.length === 0) {
     return next(
-      new AppError("Title, description, video and price are required", 400)
+      new AppError(
+        "Title, description, price, and at least one lesson video are required",
+        400
+      )
     );
   }
-  // Create course with additional metadata
+
+  const lessons = lessonVideos.map((file, index) => ({
+    title: req.body.lessonTitles?.[index] || `Lesson ${index + 1}`,
+    videoUrl: file.path.replace(/\\/g, "/"),
+  }));
+
   const course = await Course.create({
     title,
     description,
     shortDescription: description.substring(0, 160),
     price,
-    video: video, // Save the filename or path to the database
-    banner: banner,
+    banner,
     instructor: req.user.id,
     category: category || "Other",
     level: level || "Beginner",
     requirements: req.body.requirements || [],
     learningOutcomes: req.body.learningOutcomes || [],
     tags: req.body.tags || [],
+    lessons, // ✅ Now storing lesson videos properly
   });
+
   res.status(201).json({
     status: "success",
     data: {
@@ -86,7 +94,6 @@ exports.getCourses = catchAsync(async (req, res, next) => {
 exports.updateCourse = catchAsync(async (req, res, next) => {
   const { title, description, price, category, level } = req.body;
 
-  // Find existing course
   const course = await Course.findById(req.params.id);
   if (!course) {
     return res.status(404).json({
@@ -95,7 +102,6 @@ exports.updateCourse = catchAsync(async (req, res, next) => {
     });
   }
 
-  // Update fields
   course.title = title || course.title;
   course.description = description || course.description;
   course.price = price || course.price;
@@ -105,15 +111,20 @@ exports.updateCourse = catchAsync(async (req, res, next) => {
   // Handle uploaded files
   if (req.files?.banner) {
     const bannerPath = req.files.banner[0].path;
-    course.banner = bannerPath.replace(/\\/g, "/"); // Normalize Windows paths
+    course.banner = bannerPath.replace(/\\/g, "/");
   }
 
-  if (req.files?.video) {
-    const videoPath = req.files.video[0].path;
-    course.video = videoPath.replace(/\\/g, "/");
+  // Update lessons if new ones uploaded
+  const lessonVideos = req.files?.["lessonVideos"] || [];
+  if (lessonVideos.length > 0) {
+    const newLessons = lessonVideos.map((file, index) => ({
+      title: req.body.lessonTitles?.[index] || `Lesson ${index + 1}`,
+      videoUrl: file.path.replace(/\\/g, "/"),
+    }));
+
+    course.lessons = newLessons; // ❗ You could also choose to push instead of replacing
   }
 
-  // Save updated course
   const updatedCourse = await course.save();
 
   res.status(200).json({
