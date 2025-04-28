@@ -11,13 +11,13 @@ const router = express.Router();
 router.patch(
   "/:id",
   upload.fields([
-    { name: "video", maxCount: 1 },
+    // { name: "video", maxCount: 1 },
     { name: "banner", maxCount: 1 },
+    { name: "lessonVideos", maxCount: 20 },
   ]),
   courseController.updateCourse
 );
 
-// Route definition with multer middleware
 router.post(
   "/",
   authMiddleware,
@@ -25,28 +25,39 @@ router.post(
   upload.fields([
     { name: "video", maxCount: 1 },
     { name: "banner", maxCount: 1 },
+    { name: "lessonVideos", maxCount: 20 },
   ]),
-  courseController.createCourse
+  async (req, res, next) => {
+    try {
+      await courseController.createCourse(req, res, next);
+    } catch (error) {
+      console.error("Error in POST /api/courses:", error); // Log error for debugging
+      next(error); // Pass error to error handler
+    }
+  }
 );
 
 router.get("/", courseController.getCourses);
+
 router.get(
   "/enrolled",
   authController.protect,
   courseController.getEnrolledCourses
 );
+
 router.get("/metrics", courseController.getCourseMetrics);
+
 router.delete(
   "/:id",
   authMiddleware,
   adminMiddleware,
   courseController.deleteCourse
 );
+
 router.post(
   "/:courseId/enroll",
   authController.protect,
   courseController.trackEnrollment
-  //   paymentController.handlePayment
 );
 
 module.exports = router;
