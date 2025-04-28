@@ -181,6 +181,40 @@ exports.getEnrolledCourses = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getCourseLessons = catchAsync(async (req, res, next) => {
+  const { courseId } = req.params;
+  const userId = req.user._id;
+
+  const course = await Course.findById(courseId)
+    .select(
+      "title description shortDescription lessons banner instructor students"
+    )
+    .populate("instructor", "name");
+
+  if (!course) {
+    return next(new AppError("Course not found", 404));
+  }
+
+  if (!course.students.some(studentId => studentId.equals(userId))) {
+    return next(new AppError("You are not enrolled in this course", 403));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      course: {
+        title: course.title,
+        description: course.description,
+        shortDescription: course.shortDescription,
+        lessons: course.lessons,
+        banner: course.banner,
+        instructor: course.instructor,
+      },
+    },
+  });
+});
+
 exports.getCourseMetrics = catchAsync(async (req, res) => {
   const metrics = await Course.aggregate([
     {
