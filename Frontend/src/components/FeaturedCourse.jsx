@@ -28,7 +28,7 @@ export default function FeaturedCourse() {
 
         const { data } = await courseService.getAllCourses(params);
         setCourses(data.courses || []);
-        console.log(data);
+        console.log(data.courses);
       } catch (error) {
         console.error("Error loading courses:", error);
       } finally {
@@ -63,8 +63,7 @@ export default function FeaturedCourse() {
         <h1>Our Featured Courses</h1>
       </div>
 
-      
-       {/* <div className={styles.controls}>
+      <div className={styles.controlsCombined}>
         <input
           type="text"
           placeholder="Search courses..."
@@ -72,49 +71,33 @@ export default function FeaturedCourse() {
           onChange={handleSearchChange}
           className={styles.searchInput}
         />
+
+        <select
+          value={sort}
+          onChange={handleSortChange}
+          className={styles.sortSelect}
+        >
+          <option value="createdAt">Newest</option>
+          <option value="price">Price: Low to High</option>
+          <option value="-price">Price: High to Low</option>
+          <option value="title">Title A-Z</option>
+          <option value="-title">Title Z-A</option>
+        </select>
       </div>
-
-      
-      <div className={styles.controls}>
-        <label>
-          Sort by:{" "}
-          <select value={sort} onChange={handleSortChange}>
-            <option value="createdAt">Newest</option>
-            <option value="price">Price: Low to High</option>
-            <option value="-price">Price: High to Low</option>
-            <option value="title">Title A-Z</option>
-            <option value="-title">Title Z-A</option>
-          </select>
-        </label>
-      </div>  */}
-      {/* Combined search + sort controls */}
-<div className={styles.controlsCombined}>
-  <input
-    type="text"
-    placeholder="Search courses..."
-    value={search}
-    onChange={handleSearchChange}
-    className={styles.searchInput}
-  />
-
-  <select value={sort} onChange={handleSortChange} className={styles.sortSelect}>
-    <option value="createdAt">Newest</option>
-    <option value="price">Price: Low to High</option>
-    <option value="-price">Price: High to Low</option>
-    <option value="title">Title A-Z</option>
-    <option value="-title">Title Z-A</option>
-  </select>
-</div>
-
 
       {loading ? (
         <p>Loading courses...</p>
       ) : (
         <>
           <div className={styles.courseGrid}>
-            {courses.map(({ id, title, description, image, price }) => (
+            {courses.map(({ id, title, description, banner, price }) => (
               <div key={id} className={styles.courseCard}>
-                <img src={image} alt={title} className={styles.courseImage} />
+                <img
+                  src={courseService.getBannerUrl(banner)}
+                  alt={title}
+                  className={styles.courseImage}
+                  onError={(e) => (e.target.src = "/default-course.jpg")}
+                />
                 <div className={styles.courseContent}>
                   <h3 className={styles.courseTitle}>{title}</h3>
                   <p className={styles.courseDescription}>{description}</p>

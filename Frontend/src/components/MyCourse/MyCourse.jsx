@@ -14,6 +14,7 @@ const MyCourse = () => {
     const fetchEnrolledCourses = async () => {
       try {
         const data = await courseService.getEnrolledCourses(); // Expect { status, data: { courses } }
+        console.log(data);
         console.log("Enrolled courses:", data);
         setCourses(data || []);
       } catch (err) {
@@ -48,11 +49,10 @@ const MyCourse = () => {
           <li key={course._id} className={styles.courseItem}>
             {course.banner && (
               <img
-                // src={`/uploads/banners/${course.banner}`}
-                src={`http://localhost:5000/uploads/banners/${course.banner}`}
-
-                alt={`${course.title} banner`}
-                className={styles.banner}
+                src={courseService.getBannerUrl(course.banner)}
+                alt={course.title}
+                className={styles.courseImage}
+                onError={(e) => (e.target.src = "/default-course.jpg")}
               />
             )}
             <h3>{course.title}</h3>
