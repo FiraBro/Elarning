@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { courseService } from "../service/api";
 import styles from "./FeaturedCourse.module.css";
+import { motion } from "framer-motion";
 
 export default function FeaturedCourse() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState({});
-  console.log(courses);
-  // Pagination, sorting, and search state
   const [page, setPage] = useState(1);
   const [limit] = useState(6);
   const [sort, setSort] = useState("createdAt");
@@ -58,7 +57,6 @@ export default function FeaturedCourse() {
     } catch (error) {
       console.error("Enrollment failed:", error);
       alert(error.response?.data?.message || "Enrollment failed");
-      console.log(error.response.data.message);
     } finally {
       setEnrolling((prev) => ({ ...prev, [courseId]: false }));
     }
@@ -66,11 +64,30 @@ export default function FeaturedCourse() {
 
   return (
     <section className={styles.featuredSection}>
-      <div className={styles.featureHaed}>
+      <motion.div
+        className={styles.featureHaed}
+        initial={{ opacity: 0, y: -20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 1.2, // Slower transition duration
+          ease: "easeInOut", // Smooth easing
+        }}
+        viewport={{ once: true }}
+      >
         <h1>Our Featured Courses</h1>
-      </div>
+      </motion.div>
 
-      <div className={styles.controlsCombined}>
+      <motion.div
+        className={styles.controlsCombined}
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 1.2, // Slower duration for controls
+          ease: "easeInOut", // Smooth easing
+          delay: 0.2,
+        }}
+        viewport={{ once: true }}
+      >
         <input
           type="text"
           placeholder="Search courses..."
@@ -90,15 +107,35 @@ export default function FeaturedCourse() {
           <option value="title">Title A-Z</option>
           <option value="-title">Title Z-A</option>
         </select>
-      </div>
+      </motion.div>
 
       {loading ? (
         <p>Loading courses...</p>
       ) : (
         <>
-          <div className={styles.courseGrid}>
-            {courses.map(({ _id, title, description, banner, price }) => (
-              <div key={_id} className={styles.courseCard}>
+          <motion.div
+            className={styles.courseGrid}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{
+              duration: 1.5, // Slower fade-in duration
+              ease: "easeInOut", // Smooth easing
+            }}
+            viewport={{ once: true }}
+          >
+            {courses.map(({ _id, title, description, banner, price }, i) => (
+              <motion.div
+                key={_id}
+                className={styles.courseCard}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1, // Longer fade-in duration
+                  ease: "easeInOut", // Smooth easing for each card
+                  delay: i * 0.2, // Stagger delay for smooth entry
+                }}
+                viewport={{ once: true }}
+              >
                 <img
                   src={courseService.getBannerUrl(banner)}
                   alt={title}
@@ -119,11 +156,20 @@ export default function FeaturedCourse() {
                     </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
-          <div className={styles.pagination}>
+          <motion.div
+            className={styles.pagination}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{
+              duration: 1, // Slower duration for pagination
+              ease: "easeInOut", // Smooth easing
+            }}
+            viewport={{ once: true }}
+          >
             <button
               onClick={handlePrevPage}
               disabled={page === 1}
@@ -138,7 +184,7 @@ export default function FeaturedCourse() {
             >
               Next
             </button>
-          </div>
+          </motion.div>
         </>
       )}
     </section>
