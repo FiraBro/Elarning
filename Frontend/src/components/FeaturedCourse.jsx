@@ -5,7 +5,8 @@ import styles from "./FeaturedCourse.module.css";
 export default function FeaturedCourse() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [enrolling, setEnrolling] = useState({});
+  console.log(courses);
   // Pagination, sorting, and search state
   const [page, setPage] = useState(1);
   const [limit] = useState(6);
@@ -16,19 +17,11 @@ export default function FeaturedCourse() {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        // Build params object with search included
-        const params = {
-          page,
-          limit,
-          sort,
-        };
-        if (search.trim() !== "") {
-          params.search = search.trim();
-        }
+        const params = { page, limit, sort };
+        if (search.trim() !== "") params.search = search.trim();
 
         const { data } = await courseService.getAllCourses(params);
         setCourses(data.courses || []);
-        console.log(data.courses);
       } catch (error) {
         console.error("Error loading courses:", error);
       } finally {
@@ -46,7 +39,7 @@ export default function FeaturedCourse() {
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
-    setPage(1); // reset to first page when search changes
+    setPage(1);
   };
 
   const handlePrevPage = () => {
@@ -55,6 +48,20 @@ export default function FeaturedCourse() {
 
   const handleNextPage = () => {
     setPage(page + 1);
+  };
+
+  const handleEnroll = async (courseId) => {
+    try {
+      setEnrolling((prev) => ({ ...prev, [courseId]: true }));
+      await courseService.enrollInCourse(courseId);
+      alert("Enrollment successful!");
+    } catch (error) {
+      console.error("Enrollment failed:", error);
+      alert(error.response?.data?.message || "Enrollment failed");
+      console.log(error.response.data.message);
+    } finally {
+      setEnrolling((prev) => ({ ...prev, [courseId]: false }));
+    }
   };
 
   return (
@@ -90,8 +97,8 @@ export default function FeaturedCourse() {
       ) : (
         <>
           <div className={styles.courseGrid}>
-            {courses.map(({ id, title, description, banner, price }) => (
-              <div key={id} className={styles.courseCard}>
+            {courses.map(({ _id, title, description, banner, price }) => (
+              <div key={_id} className={styles.courseCard}>
                 <img
                   src={courseService.getBannerUrl(banner)}
                   alt={title}
@@ -101,18 +108,36 @@ export default function FeaturedCourse() {
                 <div className={styles.courseContent}>
                   <h3 className={styles.courseTitle}>{title}</h3>
                   <p className={styles.courseDescription}>{description}</p>
-                  <button className={styles.learnMoreBtn}>{price}$</button>
+                  <div className={styles.priceEnrollContainer}>
+                    <span className={styles.coursePrice}>{price}$</span>
+                    <button
+                      onClick={() => handleEnroll(_id)}
+                      className={styles.enrollButton}
+                      disabled={enrolling[_id]}
+                    >
+                      {enrolling[_id] ? "Enrolling..." : "Enroll Now"}
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
           <div className={styles.pagination}>
-            <button onClick={handlePrevPage} disabled={page === 1}>
+            <button
+              onClick={handlePrevPage}
+              disabled={page === 1}
+              className={styles.paginationButton}
+            >
               Previous
             </button>
             <span>Page {page}</span>
-            <button onClick={handleNextPage}>Next</button>
+            <button
+              onClick={handleNextPage}
+              className={styles.paginationButton}
+            >
+              Next
+            </button>
           </div>
         </>
       )}
