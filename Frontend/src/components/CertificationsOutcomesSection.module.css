@@ -1,46 +1,111 @@
 .certificationsOutcomesSection {
-  padding: 2rem;
+  padding: 60px 20px;
+  background-color: #f4f4f4;
+  color: #333;
   text-align: center;
 }
 
-.certificationsOutcomesSection h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: #333;
+.title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #2e3b4e;
 }
 
 .intro {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+  color: #666;
 }
 
 .outcomesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-bottom: 40px;
 }
 
 .outcome {
-  padding: 1.5rem;
+  padding: 20px;
+  background-color: white;
   border-radius: 8px;
-  background-color: #f9f9f9;
-  text-align: left;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.outcome:hover {
+  transform: translateY(-10px);
 }
 
 .outcome h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-  color: #555;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #2e3b4e;
 }
 
 .outcome p {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #777;
 }
 
 .conclusion {
-  font-size: 1rem;
-  color: #555;
-  margin-top: 2rem;
+  font-size: 1.2rem;
+  color: #333;
+  margin-top: 40px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .outcomesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .outcomesGrid {
+    grid-template-columns: 1fr; /* One column layout for tablets and below */
+    gap: 20px; /* Reduce gap for smaller screens */
+  }
+
+  .title {
+    font-size: 1.8rem; /* Smaller title size for smaller screens */
+  }
+
+  .intro {
+    font-size: 1rem; /* Smaller text for the intro */
+  }
+
+  .outcome h3 {
+    font-size: 1.3rem; /* Adjusting outcome card title size */
+  }
+
+  .outcome p {
+    font-size: 0.9rem; /* Smaller description text */
+  }
+
+  .conclusion {
+    font-size: 1rem; /* Adjust the conclusion font size */
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.5rem; /* Even smaller title for small screens */
+  }
+
+  .intro {
+    font-size: 0.9rem; /* Adjust intro text for better fit */
+  }
+
+  .outcome h3 {
+    font-size: 1.2rem; /* Even smaller heading on mobile */
+  }
+
+  .outcome p {
+    font-size: 0.85rem; /* Adjust description text */
+  }
+
+  .conclusion {
+    font-size: 0.9rem; /* Adjust conclusion font size */
+  }
 }
