@@ -230,6 +230,20 @@ export const userService = {
       throw error;
     }
   },
+  getUserImageUrl: (photo) => {
+    if (!photo) return "/default-avatar.jpg";
+
+    // Handle different path formats
+    let basePath = "http://localhost:5000/uploads/userImage/";
+
+    // If already contains full path (e.g., from edits)
+    if (photo.startsWith("uploads/")) {
+      basePath = "http://localhost:5000/";
+    }
+
+    // Add cache-busting timestamp
+    return `${basePath}${photo}?${new Date().getTime()}`;
+  },
 
   logout: () => {
     localStorage.removeItem("token");
