@@ -116,8 +116,20 @@ export const courseService = {
     const response = API.get(`/courses/${courseId}/lessons`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
-    console.log(response)
-    return response
+    console.log(response);
+    return response;
+  },
+
+  getBannerUrl: (banner) => {
+    if (!banner) return "/default-course.jpg";
+
+    // Handle both cases:
+    // 1. "uploads/banners/banner-123.jpg" (from edits)
+    // 2. "banner-123.jpg" (from initial uploads)
+    if (banner.startsWith("uploads/")) {
+      return `http://localhost:5000/${banner}`;
+    }
+    return `http://localhost:5000/api/uploads/banner/${banner}`;
   },
 };
 
