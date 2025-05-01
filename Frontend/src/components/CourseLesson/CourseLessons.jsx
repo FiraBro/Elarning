@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
 import style from "./CourseLessons.module.css";
 import { courseService } from "../../service/api";
+import Navbar from "../Navbar/Navbar";
 
 const CourseLessons = () => {
   const { courseId } = useParams();
@@ -61,69 +62,72 @@ const CourseLessons = () => {
   }
 
   return (
-    <div className={style.courseLessons}>
-      <div className={style.courseHeader}>
-        <h1>{course.title}</h1>
-        <p className={style.description}>{course.description}</p>
-      </div>
-
-      <div className={style.contentWrapper}>
-        {/* Video Player (Left) */}
-        <div className={style.videoSection}>
-          {currentLesson ? (
-            <>
-              <h2 className={style.lessonTitle}>{currentLesson.title}</h2>
-              {currentLesson.videoUrl ? (
-                <>
-                  {console.log("Raw videoUrl:", currentLesson.videoUrl)}
-                  <ReactPlayer
-                    url={
-                      currentLesson.videoUrl.startsWith("uploads")
-                        ? `http://localhost:5000/${currentLesson.videoUrl}`
-                        : currentLesson.videoUrl
-                    }
-                    controls
-                    playing
-                    muted // Allow auto-play
-                    width="100%"
-                    height="100%"
-                    className={style.videoPlayer}
-                    onError={(e) => console.error("ReactPlayer Error:", e)}
-                    onReady={() => console.log("Player Ready")}
-                  />
-                </>
-              ) : (
-                <p>No video available for this lesson.</p>
-              )}
-            </>
-          ) : (
-            <p>No lessons available.</p>
-          )}
+    <div className={style.holeCorselessan}>
+      <Navbar />
+      <div className={style.courseLessons}>
+        <div className={style.courseHeader}>
+          <h1>{course.title}</h1>
+          <p className={style.description}>{course.description}</p>
         </div>
 
-        {/* Lesson List (Right) */}
-        <div className={style.lessonList}>
-          <h2>Course Content</h2>
-          {course.lessons.length === 0 ? (
-            <p>No lessons available.</p>
-          ) : (
-            <ul className={style.lessonItems}>
-              {course.lessons.map((lesson) => (
-                <li
-                  key={lesson._id}
-                  className={`${style.lessonItem} ${
-                    currentLesson?._id === lesson._id ? style.active : ""
-                  }`}
-                  onClick={() => handleLessonSelect(lesson)}
-                >
-                  <span className={style.lessonNumber}>
-                    {course.lessons.indexOf(lesson) + 1}.
-                  </span>
-                  <span className={style.lessonTitle}>{lesson.title}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+        <div className={style.contentWrapper}>
+          {/* Video Player (Left) */}
+          <div className={style.videoSection}>
+            {currentLesson ? (
+              <>
+                <h2 className={style.lessonTitle}>{currentLesson.title}</h2>
+                {currentLesson.videoUrl ? (
+                  <>
+                    {console.log("Raw videoUrl:", currentLesson.videoUrl)}
+                    <ReactPlayer
+                      url={
+                        currentLesson.videoUrl.startsWith("uploads")
+                          ? `http://localhost:5000/${currentLesson.videoUrl}`
+                          : currentLesson.videoUrl
+                      }
+                      controls
+                      playing
+                      muted // Allow auto-play
+                      width="100%"
+                      height="100%"
+                      className={style.videoPlayer}
+                      onError={(e) => console.error("ReactPlayer Error:", e)}
+                      onReady={() => console.log("Player Ready")}
+                    />
+                  </>
+                ) : (
+                  <p>No video available for this lesson.</p>
+                )}
+              </>
+            ) : (
+              <p>No lessons available.</p>
+            )}
+          </div>
+
+          {/* Lesson List (Right) */}
+          <div className={style.lessonList}>
+            <h2>Course Content</h2>
+            {course.lessons.length === 0 ? (
+              <p>No lessons available.</p>
+            ) : (
+              <ul className={style.lessonItems}>
+                {course.lessons.map((lesson) => (
+                  <li
+                    key={lesson._id}
+                    className={`${style.lessonItem} ${
+                      currentLesson?._id === lesson._id ? style.active : ""
+                    }`}
+                    onClick={() => handleLessonSelect(lesson)}
+                  >
+                    <span className={style.lessonNumber}>
+                      {course.lessons.indexOf(lesson) + 1}.
+                    </span>
+                    <span className={style.lessonTitle}>{lesson.title}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
     </div>
