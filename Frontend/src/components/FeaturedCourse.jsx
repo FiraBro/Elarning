@@ -11,7 +11,7 @@ export default function FeaturedCourse() {
   const [limit] = useState(6);
   const [sort, setSort] = useState("createdAt");
   const [search, setSearch] = useState("");
-
+console.log(courses)
   useEffect(() => {
     const fetchCourses = async () => {
       setLoading(true);
