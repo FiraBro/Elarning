@@ -11,6 +11,7 @@ import AdminLayout from "./iu/AdminLayout";
 import UserControl from "./components/UserController/UserController";
 import CourseLessons from "./components/CourseLesson/CourseLessons";
 import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
+import CourseDetailPage from "./pages/CourseDetailPage";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -39,6 +40,10 @@ export default function App() {
       element: <Profile />,
     },
     {
+      path: "/courses/:id",
+      element: <CourseDetailPage />,
+    },
+    {
       path: "/instructor",
       element: <InstructorPage />,
     },
@@ -49,6 +54,7 @@ export default function App() {
           path: "admin/dashboard",
           element: <AdminDashboard />,
         },
+
         {
           path: "admin/courses",
           element: <CourseController />,
