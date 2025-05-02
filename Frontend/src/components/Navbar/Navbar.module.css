@@ -1,0 +1,366 @@
+/* .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border:1px solid lightgray;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo a {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-decoration: none;
+}
+
+.navLinks {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.navLinks a,
+.navLinks button {
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.navLinks a:hover {
+  color: #3498db;
+}
+
+.authLink {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.instructorButton {
+  padding: 0.5rem 1rem;
+  color: #000;
+  border-radius: 4px;
+  
+}
+.logoutButton {
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  background: transparent;
+}
+.logoutButton:hover {
+  color: #3498db;
+}
+.mobileMenu {
+  display: none;
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #2c3e50;
+  z-index: 1001;
+  transition: transform 0.3s ease;
+}
+
+.menuButton.active {
+  transform: rotate(90deg);
+}
+
+.mobileNavLinks {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+ 
+
+  left: 0;
+  right: 0;
+  background-color: white;
+  padding: 4rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.mobileNavLinks.active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.mobileNavLinks a,
+.mobileNavLinks button {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+  color: #2c3e50;
+  text-decoration: none;
+}
+
+.mobileNavLinks a:hover,
+.mobileNavLinks button:hover {
+  background-color: #f8f9fa;
+}
+
+.mobileNavLinks button {
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.backdrop.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+
+@media (max-width: 768px) {
+  .navLinks .adminButton {
+    margin: 8px 0;
+    display: none;
+  }
+
+  .mobileNavLinks .adminButton {
+    display: block; 
+  }
+}
+
+@media (max-width: 768px) {
+  .navLinks {
+    display: none;
+  }
+
+  .mobileMenu {
+    display: block;
+  }
+
+  .navbar {
+    padding: 1rem;
+  }
+
+  .logo a {
+    font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobileNavLinks {
+    display: none;
+  }
+}
+
+.menuOpen {
+  overflow: hidden;
+} */
+
+/* Navbar Styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #4b5563; /* Dark border for navbar */
+  padding: 1rem 2rem;
+  background-color: #2d3748; /* Dark background */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo a {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e5e7eb; /* Light text for logo */
+  text-decoration: none;
+}
+
+.navLinks {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.navLinks a,
+.navLinks button {
+  text-decoration: none;
+  color: #e5e7eb; /* Light color for links/buttons */
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.navLinks a:hover {
+  color: #3498db; /* Highlight color */
+}
+
+.authLink {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  background: #374151;
+}
+
+.instructorButton {
+  padding: 0.5rem 1rem;
+  color: #e5e7eb;
+  border-radius: 4px;
+}
+
+.logoutButton {
+  color: #e5e7eb;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  background: transparent;
+}
+.logoutButton:hover {
+  color: #3498db; /* Hover effect for logout button */
+}
+
+/* Mobile Menu */
+.mobileMenu {
+  display: none;
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #e5e7eb; /* Light text for menu button */
+  z-index: 1001;
+  transition: transform 0.3s ease;
+}
+
+.menuButton.active {
+  transform: rotate(90deg);
+}
+
+.mobileNavLinks {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #374151; /* Dark background for mobile menu */
+  padding: 4rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.mobileNavLinks.active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.mobileNavLinks a,
+.mobileNavLinks button {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #4b5563;
+  transition: background-color 0.2s;
+  color: #e5e7eb;
+  text-decoration: none;
+}
+
+.mobileNavLinks a:hover,
+.mobileNavLinks button:hover {
+  background-color: #2d3748; /* Hover effect for links */
+}
+
+.mobileNavLinks button {
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Backdrop */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.backdrop.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navLinks .adminButton {
+    margin: 8px 0;
+    display: none; /* Hide desktop version on mobile */
+  }
+
+  .mobileNavLinks .adminButton {
+    display: block; /* Show in mobile menu */
+  }
+}
+
+@media (max-width: 768px) {
+  .navLinks {
+    display: none;
+  }
+
+  .mobileMenu {
+    display: block;
+  }
+
+  .navbar {
+    padding: 1rem;
+  }
+
+  .logo a {
+    font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobileNavLinks {
+    display: none;
+  }
+}
+
+.menuOpen {
+  overflow: hidden;
+}
