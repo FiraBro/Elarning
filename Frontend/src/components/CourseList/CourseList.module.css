@@ -1,0 +1,148 @@
+:root {
+  --color-primary: #2563eb;
+  --color-accent-teal: #0d9488;
+  --color-accent-purple: #7c3aed;
+  --color-accent-orange: #ea580c;
+  --color-text: #1f2937;
+  --color-background: #f9fafb;
+  --color-muted: #6b7280;
+  --color-light: #e5e7eb;
+  --color-white: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.07);
+}
+
+.featuredSection {
+  padding: 3rem 2rem;
+  background: var(--color-background);
+}
+
+.featureHaed {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.featureHaed h1 {
+  font-size: 2.5rem;
+  color: var(--color-text);
+}
+
+.controlsCombined {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.searchInput,
+.sortSelect {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-light);
+  background-color: var(--color-white);
+  color: var(--color-text);
+}
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.courseCard {
+  background: var(--color-white);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px var(--color-shadow);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.courseCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.courseImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.courseContent {
+  padding: 1rem;
+}
+
+.courseTitle {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-primary);
+}
+
+.courseDescription {
+  font-size: 0.95rem;
+  color: var(--color-muted);
+  margin-bottom: 1rem;
+}
+
+.priceEnrollContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.coursePrice {
+  font-weight: bold;
+  color: var(--color-accent-orange);
+}
+
+.enrollButton {
+  background-color: var(--color-accent-teal);
+  color: var(--color-white);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.enrollButton:hover {
+  background-color: #0f766e;
+}
+
+.pagination {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.paginationButton {
+  background: transparent;
+  border: 1px solid var(--color-accent-purple);
+  padding: 0.5rem 0.5rem;
+  margin: 0 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.paginationButton:hover {
+  background: #d1d5db;
+}
+
+.viewDetailButton {
+  display: inline-block;
+  margin-left: 12px;
+  padding: 6px 14px;
+  background-color: var(--color-accent-purple);
+  color: var(--color-white);
+  font-weight: 600;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.viewDetailButton:hover {
+  background-color: #5b21b6;
+}
