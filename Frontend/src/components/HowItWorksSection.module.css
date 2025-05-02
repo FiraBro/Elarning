@@ -1,45 +1,72 @@
-.howItWorksSection {
-  padding: 2rem;
+
+.container {
+  padding: 4rem 2rem;
+  background-color: #0f172a; /* dark background for contrast */
+  color: #f8fafc;
   text-align: center;
 }
 
-.howItWorksSection h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: #333;
+.heading {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #ffffff;
 }
 
 .steps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
 }
 
-.step {
-  padding: 1rem;
-  border-radius: 8px;
-  text-align: center;
-  background-color: #f9f9f9;
+.card {
+  position: relative;
+  background-color: #1e293b;
+  padding: 2rem;
+  border-radius: 16px;
+  z-index: 1;
+  overflow: hidden;
+  color: #e2e8f0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.stepNumber {
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 50%;
-  background-color: #007bff;
-  color: white;
+.card::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #14b8a6, #6366f1, #f59e0b, #ec4899);
+  background-size: 400% 400%;
+  border-radius: 18px;
+  z-index: -1;
+  animation: animatedBorder 6s ease infinite;
+}
+
+@keyframes animatedBorder {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #facc15;
+}
+
+.card h3 {
+  font-size: 1.2rem;
   margin-bottom: 0.5rem;
 }
 
-.step h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-  color: #555;
-}
-
-.step p {
-  font-size: 0.9rem;
-  color: #777;
+.card p {
+  font-size: 0.95rem;
+  color: #cbd5e1;
 }
