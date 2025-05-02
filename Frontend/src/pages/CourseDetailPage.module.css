@@ -1,0 +1,69 @@
+/* CourseDetailPage.module.css */
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: #555;
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #34495e;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.3rem;
+}
+
+.benefitsList {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #444;
+}
+
+.benefitsList li {
+  margin-bottom: 0.5rem;
+}
+
+.lessonCount {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.instructor {
+  font-style: italic;
+  color: #7f8c8d;
+  font-size: 1rem;
+  border-top: 1px solid #ecf0f1;
+  padding-top: 1rem;
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  color: #e74c3c;
+}
