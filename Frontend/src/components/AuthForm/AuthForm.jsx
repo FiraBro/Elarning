@@ -1,12 +1,12 @@
 // import { useState } from "react";
 // import style from "./AuthForm.module.css";
-// import Button from '../Button/Button'
+// import Button from "../Button/Button";
+
 // const AuthForm = ({ onSubmit, isLogin }) => {
 //   const [name, setName] = useState("");
 //   const [email, setEmail] = useState("");
 //   const [password, setPassword] = useState("");
 //   const [role, setRole] = useState("");
-
 //   const [errors, setErrors] = useState({});
 
 //   const validate = () => {
@@ -17,6 +17,8 @@
 //     if (!password) newErrors.password = "Password is required";
 //     else if (password.length < 8)
 //       newErrors.password = "Password must be at least 8 characters";
+//     if (!isLogin && !role) newErrors.role = "Role is required";
+
 //     setErrors(newErrors);
 //     return Object.keys(newErrors).length === 0;
 //   };
@@ -27,7 +29,7 @@
 //       if (isLogin) {
 //         onSubmit({ email, password });
 //       } else {
-//         onSubmit({ name, email, password });
+//         onSubmit({ name, email, password, role });
 //       }
 //     }
 //   };
@@ -73,25 +75,30 @@
 //           <span className={style.error}>{errors.password}</span>
 //         )}
 //       </div>
-//       <div className={style.formGroup}>
-//         <label htmlFor="password">Password</label>
-//         <input
-//           type="text"
-//           id="text"
-//           value={role}
-//           onChange={(e) => setPassword(e.target.value)}
-//           className={errors.role ? style.errorInput : ""}
-//         />
-//         {errors.role && (
-//           <span className={style.error}>{errors.role}</span>
-//         )}
-//       </div>
+
+//       {!isLogin && (
+//         <div className={style.formGroup}>
+//           <label htmlFor="role">Role</label>
+//           <select
+//             id="role"
+//             value={role}
+//             onChange={(e) => setRole(e.target.value)}
+//             className={errors.role ? style.errorInput : ""}
+//           >
+//             <option value="">Select a role</option>
+//             <option value="student">Student</option>
+//             <option value="admin">Admin</option>
+//             <option value="instructor">Instructor</option>
+//           </select>
+//           {errors.role && <span className={style.error}>{errors.role}</span>}
+//         </div>
+//       )}
 
 //       <Button type="submit">{isLogin ? "Login" : "Sign Up"}</Button>
-
 //     </form>
 //   );
 // };
+
 // export default AuthForm;
 
 import { useState } from "react";
@@ -102,7 +109,6 @@ const AuthForm = ({ onSubmit, isLogin }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
   const [errors, setErrors] = useState({});
 
   const validate = () => {
@@ -113,7 +119,6 @@ const AuthForm = ({ onSubmit, isLogin }) => {
     if (!password) newErrors.password = "Password is required";
     else if (password.length < 8)
       newErrors.password = "Password must be at least 8 characters";
-    if (!isLogin && !role) newErrors.role = "Role is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -125,7 +130,7 @@ const AuthForm = ({ onSubmit, isLogin }) => {
       if (isLogin) {
         onSubmit({ email, password });
       } else {
-        onSubmit({ name, email, password, role });
+        onSubmit({ name, email, password });
       }
     }
   };
@@ -171,24 +176,6 @@ const AuthForm = ({ onSubmit, isLogin }) => {
           <span className={style.error}>{errors.password}</span>
         )}
       </div>
-
-      {!isLogin && (
-        <div className={style.formGroup}>
-          <label htmlFor="role">Role</label>
-          <select
-            id="role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className={errors.role ? style.errorInput : ""}
-          >
-            <option value="">Select a role</option>
-            <option value="student">Student</option>
-            <option value="admin">Admin</option>
-            <option value="instructor">Instructor</option>
-          </select>
-          {errors.role && <span className={style.error}>{errors.role}</span>}
-        </div>
-      )}
 
       <Button type="submit">{isLogin ? "Login" : "Sign Up"}</Button>
     </form>
