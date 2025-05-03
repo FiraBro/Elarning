@@ -1,0 +1,316 @@
+:root {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --card-bg: #1e1e1e;
+  --primary: #3498db;
+  --danger: #e74c3c;
+  --hover-primary: #2980b9;
+  --hover-danger: #c0392b;
+}
+
+/* Spinner */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  color: var(--text-color);
+}
+
+.spinner {
+  border: 5px solid #333;
+  border-top: 5px solid var(--primary);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Profile Layout */
+.holeProfile {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+  background: var(--bg-color);
+  border-radius: 10px;
+  color: var(--text-color);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.profileContainer {
+  padding: 20px;
+}
+
+/* Header */
+.profileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.logoutButton {
+  background-color: var(--danger);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: var(--hover-danger);
+}
+
+/* Profile Section */
+.profileSection {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: white;
+  font-size: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userInfo h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.userEmail,
+.userRole {
+  color: #aaa;
+}
+
+/* Account Info and Preferences */
+.profileDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.detailCard {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  flex: 1 1 48%;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.detailItem,
+.preferenceItem {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.editButton {
+  background: var(--primary);
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.editButton:hover {
+  background-color: var(--hover-primary);
+}
+
+/* Update Profile Section */
+.updateProfile {
+  margin-top: 40px;
+}
+
+.updateForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.updateForm label {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.updateForm input {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #222;
+  color: var(--text-color);
+  font-size: 16px;
+}
+
+.updateForm input:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.saveButton {
+  background-color: var(--primary);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+  width: 50%;
+
+}
+
+.saveButton:hover {
+  background-color: var(--hover-primary);
+}
+
+.errorText {
+  color: var(--danger);
+  margin-top: 10px;
+}
+
+/* Action Buttons */
+.actionButtons {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.actionButton {
+  background-color: var(--primary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  border: none;
+}
+
+.actionButton:hover {
+  background-color: var(--hover-primary);
+}
+
+.actionButtonDanger {
+  background-color: var(--danger);
+  color: white;
+}
+
+.actionButtonDanger:hover {
+  background-color: var(--hover-danger);
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 95%;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+  color: var(--text-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profileDetails {
+    flex-direction: column;
+  }
+
+  .detailCard {
+    width: 100%;
+  }
+
+  .profileHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .updateForm input,
+  .saveButton,
+  .logoutButton,
+  .actionButton,
+  .actionButtonDanger {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+  }
+
+  .userInfo h3 {
+    font-size: 18px;
+  }
+
+  .updateForm label {
+    font-size: 14px;
+  }
+
+  .updateForm input {
+    font-size: 14px;
+  }
+
+  .modal {
+    padding: 20px;
+    width: 90%;
+  }
+}
