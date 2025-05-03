@@ -3,15 +3,14 @@
   margin: 40px auto;
   padding: 0 20px 40px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
 }
 
-h2 {
+.myCoursesContainer h2 {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 30px;
   text-align: center;
-  color: #222;
+  color: #fff;
   letter-spacing: 1px;
 }
 
@@ -105,5 +104,55 @@ strong {
 
   .banner {
     height: 150px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .myCoursesContainer {
+    background: #181c1f;
+    color: #e6e6e6;
+  }
+
+  h2 {
+    color: #e0e7ef;
+  }
+
+  .courseItem {
+    background: #23272b;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .courseItem:hover {
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  }
+
+  .banner {
+    border-bottom: 1px solid #333;
+  }
+
+  h3 {
+    color: #e0e7ef;
+  }
+
+  p,
+  strong {
+    color: #cbd5e1;
+  }
+
+  .viewLessonsBtn {
+    background-color: #2563eb;
+    color: #e6e6e6;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  }
+
+  .viewLessonsBtn:hover {
+    background-color: #1e40af;
+    box-shadow: 0 6px 16px rgba(30, 64, 175, 0.5);
+  }
+
+  .loading,
+  .error,
+  .noCourses {
+    color: #b6bbc4;
   }
 }
