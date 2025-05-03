@@ -1,28 +1,22 @@
 import React from "react";
-import Navbar from "../components/Navbar";
-import Overview from "../components/overview";
-import Catagory from "../components/catagory";
-import FeaturedCourse from "../components/FeaturedCourse";
+import Navbar from "../components/Navbar/Navbar";
+import HeroSection from "../components/HeroSection/HeroSection";
 import BenefitsSection from "../components/BenefitsSection";
 import HowItWorksSection from "../components/HowItWorksSection";
 import CertificationsOutcomesSection from "../components/CertificationsOutcomesSection";
 import NewsletterSignup from "../components/NewsletterSignup";
-import Footer from "../components/Footer";
-import FeaturedInstructors from "../components/FeaturedInstructors";
-import CourseCategoriesSection from "../components/CourseCategoriesSection";
+import Footer from "../components/Footer/Footer";
+import CourseList from "../components/CourseList/CourseList";
 
 export default function HomePage() {
   return (
     <div>
       <Navbar />
-      <Overview />
-      <Catagory />
-      <FeaturedCourse />
+      <HeroSection />
+      <CourseList />
       <BenefitsSection />
       <HowItWorksSection />
       <CertificationsOutcomesSection />
-      <CourseCategoriesSection />
-      <FeaturedInstructors />
       <NewsletterSignup />
       <Footer />
     </div>

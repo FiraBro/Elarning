@@ -1,18 +1,10 @@
-import { Navigate } from "react-router-dom";
+import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
 
-const PrivateRoute = ({ children, requiredRole }) => {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("userRole");
+const PrivateRoute = () => {
+  const token = localStorage.getItem("token"); // or use your auth context/state
 
-  if (!token) {
-    return <Navigate to="/login" />;
-  }
-
-  if (requiredRole && userRole !== requiredRole) {
-    return <Navigate to="/" />;
-  }
-
-  return children;
+  return token ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default PrivateRoute;

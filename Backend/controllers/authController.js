@@ -167,15 +167,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
  * @access  Public
  */
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  const { password } = req.body;
-
-  // Validate password
-  if (!password || password.length < 8) {
-    return next(
-      new AppError("Password must be at least 8 characters long", 400)
-    );
-  }
-
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
@@ -190,22 +181,26 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError("Token is invalid or has expired", 400));
   }
 
-  user.password = password;
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
-  user.passwordChangedAt = Date.now();
   await user.save();
-
-  await new Email(user, `${new Date().toLocaleString()}`)
-    .sendPasswordChangeNotification()
-    .catch((err) => console.log(err));
 
   const token = generateToken(user._id);
 
   res.status(200).json({
     status: "success",
+    message: "Password has been reset",
     token,
-    message: "Password updated successfully",
+    data: {
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    },
   });
 });
 
@@ -228,6 +223,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // 2. Verify token
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  console.log(decoded);
 
   // 3. Check if user still exists
   const currentUser = await User.findById(decoded.id);

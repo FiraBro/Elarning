@@ -1,23 +1,27 @@
-/* src/pages/SignupPage/SignupPage.module.css */
+
 .signupPage {
   max-width: 500px;
   margin: 50px auto;
   padding: 20px;
   text-align: center;
+  background-color: #1f2937; /* Dark background */
+  color: #000; /* Light text */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .signupPage h1 {
-  color: #333;
+  color: #f9fafb; /* Heading text color */
   margin-bottom: 20px;
 }
 
 .loginLink {
   margin-top: 20px;
-  color: #666;
+  color: #cbd5e1; /* Soft light gray */
 }
 
 .loginLink a {
-  color: #4caf50;
+  color: #4caf50; /* Keep accent green for links */
   text-decoration: none;
 }
 

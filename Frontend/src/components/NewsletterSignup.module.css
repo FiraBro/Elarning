@@ -1,9 +1,10 @@
 .newsletterSignup {
   padding: 3rem 2rem;
-  background-color: #f0f4f8;
+  background-color: #0f172a; /* dark background for contrast */
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Darker shadow */
   text-align: center;
+  color: #f3f4f6; /* Light text */
 }
 
 .content {
@@ -14,12 +15,12 @@
 .content h2 {
   font-size: 1.75rem;
   margin-bottom: 1rem;
-  color: #333;
+  color: #e0e7ff; /* Light soft blue */
 }
 
 .content p {
   font-size: 1rem;
-  color: #555;
+  color: #9ca3af; /* Muted gray */
   margin-bottom: 1.5rem;
 }
 
@@ -31,15 +32,17 @@
 
 .signupForm input {
   padding: 0.75rem 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #4b5563; /* Darker border */
   border-radius: 6px;
   margin-right: 0.5rem;
   width: 60%;
+  background-color: #374151; /* Dark background for input */
+  color: #f3f4f6; /* Light text in input */
 }
 
 .signupForm button {
   padding: 0.75rem 1.25rem;
-  background-color: #007bff;
+  background-color: #2563eb; /* Primary color */
   color: white;
   border: none;
   border-radius: 6px;
@@ -47,7 +50,7 @@
 }
 
 .signupForm button:hover {
-  background-color: #0056b3;
+  background-color: #1d4ed8; /* Slightly darker hover effect */
 }
 
 .benefitsList {
@@ -57,7 +60,7 @@
 
 .benefitsList li {
   font-size: 1rem;
-  color: #555;
+  color: #9ca3af; /* Muted text for list */
   margin-bottom: 0.5rem;
 }
 

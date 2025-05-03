@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./HeroSection.module.css";
 
-import bg1 from "../../public/coding.jpg";
-import bg2 from "../../public/bugati.jpg";
-import bg3 from "../../public/home.jpg";
+import bg1 from "../../assets/coding.jpg";
+import bg2 from "../../assets/bugati.jpg";
+import bg3 from "../../assets/home.jpg";
 
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);

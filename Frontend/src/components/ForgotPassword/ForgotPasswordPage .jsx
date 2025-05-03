@@ -1,36 +1,21 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { userService } from "../../service/api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const ResetPasswordPage = () => {
-  const navigate = useNavigate();
-  const { token } = useParams();
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const ForgotPasswordPage = () => {
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleResetPassword = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match.");
-      return;
-    }
-
     setLoading(true);
     try {
-      await userService.resetPassword(token, newPassword, confirmPassword);
-      toast.success("Password reset successful. You can now log in.");
-      setTimeout(() => {
-        navigate("/login");
-      }, 2500);
-    } catch (err) {
-      toast.error(
-        "Error resetting password: " +
-          (err.response?.data?.message || err.message)
-      );
+      await userService.forgotPassword(email);
+      toast.success("Password reset link sent. Check your email.");
+      setEmail(""); // Optionally clear the input
+    } catch (error) {
+      toast.error("Error: " + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
@@ -40,37 +25,26 @@ const ResetPasswordPage = () => {
     <div style={styles.container}>
       <ToastContainer position="top-center" autoClose={2000} />
       <div style={styles.card}>
-        <h1 style={styles.heading}>Reset Password</h1>
-        <form onSubmit={handleResetPassword} style={styles.form}>
+        <h1 style={styles.heading}>Forgot Password</h1>
+        <form onSubmit={handleSubmit} style={styles.form}>
           <input
-            type="password"
+            type="email"
             required
-            placeholder="Enter new password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             style={styles.input}
-            minLength={8}
-          />
-          <input
-            type="password"
-            required
-            placeholder="Confirm new password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            style={styles.input}
-            minLength={8}
+            autoFocus
           />
           <button
             type="submit"
             style={{
               ...styles.button,
-              ...(loading || newPassword !== confirmPassword
-                ? styles.buttonDisabled
-                : {}),
+              ...(loading ? styles.buttonDisabled : {}),
             }}
-            disabled={loading || newPassword !== confirmPassword}
+            disabled={loading}
           >
-            {loading ? "Resetting..." : "Reset Password"}
+            {loading ? "Sending..." : "Send Reset Link"}
           </button>
         </form>
       </div>
@@ -140,4 +114,4 @@ const styles = {
   },
 };
 
-export default ResetPasswordPage;
+export default ForgotPasswordPage;

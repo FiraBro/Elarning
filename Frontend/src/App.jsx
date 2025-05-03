@@ -16,6 +16,8 @@ import CourseDetailPage from "./pages/CourseDetailPage";
 import PrivateRoute from "./components/PrivetRoute";
 import AdminRoute from "./components/AdminRoute";
 import AdminLayout from "./iu/AdminLayout";
+import ForgotPasswordPage from "./components/ForgotPassword/ForgotPasswordPage ";
+import ResetPasswordPage from "./components/ForgotPassword/ResetPasswordPage";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -32,7 +34,14 @@ export default function App() {
       path: "/",
       element: <HomePage />,
     },
-
+    {
+      path: "/forgot-password",
+      element: <ForgotPasswordPage />,
+    },
+    {
+      path: "/reset-password/:token",
+      element: <ResetPasswordPage />,
+    },
     // Routes requiring authentication
     {
       element: <PrivateRoute />, // Protect all children routes

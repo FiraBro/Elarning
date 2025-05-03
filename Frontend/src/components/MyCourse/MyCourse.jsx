@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { courseService } from "../../service/api";
-import Navbar from "../Navbar";
+import Navbar from "../Navbar/Navbar";
 import styles from "./MyCourse.module.css";
 
 const MyCourse = () => {
@@ -41,8 +41,9 @@ const MyCourse = () => {
     );
 
   return (
-    <div className={styles.myCoursesContainer}>
+    <div className={styles.holeMyCourse}>
       <Navbar />
+    <div className={styles.myCoursesContainer}>
       <h2>My Courses</h2>
       <ul className={styles.courseList}>
         {courses.map((course) => (
@@ -72,6 +73,7 @@ const MyCourse = () => {
           </li>
         ))}
       </ul>
+    </div>
     </div>
   );
 };

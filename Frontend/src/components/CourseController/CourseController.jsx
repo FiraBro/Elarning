@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import style from "./CourseController.module.css";
-import { courseService } from "../service/api";
+import { courseService } from "../../service/api";
 
 const CourseController = () => {
   const [courses, setCourses] = useState([]);

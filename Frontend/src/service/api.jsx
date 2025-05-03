@@ -123,13 +123,10 @@ export const courseService = {
   getBannerUrl: (banner) => {
     if (!banner) return "/default-course.jpg";
 
-    // Handle both cases:
-    // 1. "uploads/banners/banner-123.jpg" (from edits)
-    // 2. "banner-123.jpg" (from initial uploads)
     if (banner.startsWith("uploads/")) {
       return `http://localhost:5000/${banner}`;
     }
-    return `http://localhost:5000/api/uploads/banner/${banner}`;
+    return `http://localhost:5000/uploads/banners/${banner}`;
   },
 };
 
@@ -243,6 +240,45 @@ export const userService = {
 
     // Add cache-busting timestamp
     return `${basePath}${photo}?${new Date().getTime()}`;
+  },
+  forgotPassword: async (email) => {
+    try {
+      const response = await API.post("/auth/forgot-password", { email });
+      console.log(response.data.message);
+      return response.data.message; // Usually a success message
+    } catch (error) {
+      console.error(
+        "Forgot password error:",
+        error.response?.data || error.message
+      );
+      throw error;
+    }
+  },
+
+  resetPassword: async (token, newPassword, confirmPassword) => {
+    try {
+      const response = await API.patch(`/auth/reset-password/${token}`, {
+        password: newPassword,
+        passwordConfirm: confirmPassword,
+      });
+
+      if (
+        response.data.token &&
+        response.data.data &&
+        response.data.data.user
+      ) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userRole", response.data.data.user.role);
+        localStorage.setItem("userId", response.data.data.user._id);
+      }
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Reset password error:",
+        error.response?.data || error.message
+      );
+      throw error;
+    }
   },
 
   logout: () => {

@@ -8,7 +8,7 @@
   flex: 1;
   padding: 20px;
   transition: margin 0.3s ease;
-  margin-left: 250px; /* Match sidebar width */
+  margin-left: 250px; 
   min-height: calc(100vh - 40px);
 }
 

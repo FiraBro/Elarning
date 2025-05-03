@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./UserController.module.css";
-import { userService } from "../service/api"; // Import from your centralized API file
+import { userService } from "../../service/api"; // Import from your centralized API file
 
 const UserController = () => {
   const [users, setUsers] = useState([]);
@@ -44,7 +44,9 @@ const UserController = () => {
               <div className={styles.userInfo}>
                 {user.photo && (
                   <img
-                    src={`http://localhost:5000/upload/userImage/${user.photo}`}
+                    src={`http://localhost:5000/uploads/userImage/${
+                      user.photo
+                    }?${new Date().getTime()}`}
                     alt={user.name}
                     className={styles.avatar}
                   />

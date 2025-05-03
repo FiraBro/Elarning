@@ -2,6 +2,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  color: #000;
 }
 
 .courseHeader {
@@ -127,5 +128,75 @@
     position: static;
     max-height: none;
     overflow-y: visible;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .courseLessons {
+    color: #e6e6e6;
+  }
+
+  .courseHeader h1 {
+    color: #e0e7ef;
+  }
+
+  .description {
+    color: #b6bbc4;
+  }
+
+  .videoSection {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .videoSection .lessonTitle {
+    color: #e0e7ef;
+  }
+
+  .videoPlayer {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  }
+
+  .lessonList {
+    background: #23272b;
+    border-radius: 8px;
+    color: #e6e6e6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .lessonList h2 {
+    color: #e0e7ef;
+  }
+
+  .lessonItem {
+    background: transparent;
+    color: #e6e6e6;
+  }
+
+  .lessonItem:hover {
+    background-color: #222d3b;
+  }
+
+  .lessonItem.active {
+    background-color: #2563eb;
+    color: #fff;
+  }
+
+  .lessonNumber {
+    color: #90cdf4;
+  }
+
+  .lessonTitle {
+    color: #e6e6e6;
+  }
+
+  .loading {
+    color: #b6bbc4;
+  }
+
+  .error {
+    color: #f87171;
+    background: #2c1a1a;
+    border-radius: 8px;
   }
 }

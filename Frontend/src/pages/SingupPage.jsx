@@ -13,7 +13,7 @@ const SignupPage = () => {
       if (data.user.role === "student") {
         navigate("/");
       } else if (data.user.role === "admin") {
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
       }
     } catch (error) {
       alert(error.response?.data?.error || "Signup failed. Please try again.");
