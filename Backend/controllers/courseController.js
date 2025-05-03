@@ -57,7 +57,7 @@ exports.createCourse = catchAsync(async (req, res, next) => {
  * @route   GET /api/courses
  * @access  Public
  */
-exports.getCourses = catchAsync(async (req, res, next) => {
+exports.getAllCourses = catchAsync(async (req, res, next) => {
   // 1) Build query with search support
   const features = new APIFeatures(Course.find(), req.query)
     .search()
@@ -90,6 +90,19 @@ exports.getCourses = catchAsync(async (req, res, next) => {
  * @route   PATCH /api/courses/:id
  * @access  Private/Instructor
  */
+
+exports.getCourse = catchAsync(async (req, res, next) => {
+  const course = await Course.findById(req.params.id);
+  if (!course) {
+    return next(new AppError("No course is found with this ID"));
+  }
+  res.status(200).json({
+    status: "succes",
+    data: {
+      course,
+    },
+  });
+});
 
 exports.updateCourse = catchAsync(async (req, res, next) => {
   const { title, description, price, category, level } = req.body;
@@ -196,7 +209,7 @@ exports.getCourseLessons = catchAsync(async (req, res, next) => {
     return next(new AppError("Course not found", 404));
   }
 
-  if (!course.students.some(studentId => studentId.equals(userId))) {
+  if (!course.students.some((studentId) => studentId.equals(userId))) {
     return next(new AppError("You are not enrolled in this course", 403));
   }
 
