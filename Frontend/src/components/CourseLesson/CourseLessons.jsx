@@ -4,6 +4,10 @@ import ReactPlayer from "react-player";
 import style from "./CourseLessons.module.css";
 import { courseService } from "../../service/api";
 import Navbar from "../Navbar/Navbar";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const CourseLessons = () => {
   const { courseId } = useParams();
@@ -15,30 +19,28 @@ const CourseLessons = () => {
 
   useEffect(() => {
     fetchCourseLessons();
+    // eslint-disable-next-line
   }, [courseId]);
 
   const fetchCourseLessons = async () => {
     try {
       setLoading(true);
+      setError(null);
       const { data } = await courseService.getCourseLessons(courseId);
-      console.log("API Response:", data.data.course);
-      console.log("Lessons:", data.data.course.lessons);
-      setCourse(data.data.course);
-      if (data.data.course.lessons && data.data.course.lessons.length > 0) {
-        setCurrentLesson(data.data.course.lessons[0]);
-        console.log(
-          "First Lesson videoUrl:",
-          data.data.course.lessons[0].videoUrl
-        );
+      const courseData = data?.data?.course || data?.course;
+      setCourse(courseData);
+      if (courseData?.lessons && courseData.lessons.length > 0) {
+        setCurrentLesson(courseData.lessons[0]);
       }
     } catch (err) {
-      console.error("Fetch Error:", err);
       if (err.response?.status === 401) {
         navigate("/login");
       } else if (err.response?.status === 403) {
         setError("You are not enrolled in this course.");
+        toast.error("You are not enrolled in this course.");
       } else {
         setError(err.message || "Failed to load course lessons.");
+        toast.error(err.message || "Failed to load course lessons.");
       }
     } finally {
       setLoading(false);
@@ -50,20 +52,37 @@ const CourseLessons = () => {
   };
 
   if (loading) {
-    return <div className={style.loading}>Loading course...</div>;
+    return (
+      <div className={style.loading} aria-live="polite">
+        <Navbar />
+        <p>Loading course...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className={style.error}>{error}</div>;
+    return (
+      <div className={style.error} aria-live="assertive">
+        <Navbar />
+        <ToastContainer position="top-center" autoClose={3000} />
+        <p>{error}</p>
+      </div>
+    );
   }
 
   if (!course) {
-    return <div className={style.error}>Course not found.</div>;
+    return (
+      <div className={style.error} aria-live="assertive">
+        <Navbar />
+        <p>Course not found.</p>
+      </div>
+    );
   }
 
   return (
     <div className={style.holeCorselessan}>
       <Navbar />
+      <ToastContainer position="top-center" autoClose={3000} />
       <div className={style.courseLessons}>
         <div className={style.courseHeader}>
           <h1>{course.title}</h1>
@@ -77,24 +96,20 @@ const CourseLessons = () => {
               <>
                 <h2 className={style.lessonTitle}>{currentLesson.title}</h2>
                 {currentLesson.videoUrl ? (
-                  <>
-                    {console.log("Raw videoUrl:", currentLesson.videoUrl)}
-                    <ReactPlayer
-                      url={
-                        currentLesson.videoUrl.startsWith("uploads")
-                          ? `http://localhost:5000/${currentLesson.videoUrl}`
-                          : currentLesson.videoUrl
-                      }
-                      controls
-                      playing
-                      muted // Allow auto-play
-                      width="100%"
-                      height="100%"
-                      className={style.videoPlayer}
-                      onError={(e) => console.error("ReactPlayer Error:", e)}
-                      onReady={() => console.log("Player Ready")}
-                    />
-                  </>
+                  <ReactPlayer
+                    url={
+                      currentLesson.videoUrl.startsWith("uploads")
+                        ? `${API_URL}/${currentLesson.videoUrl}`
+                        : currentLesson.videoUrl
+                    }
+                    controls
+                    playing
+                    muted // Allow auto-play
+                    width="100%"
+                    height="100%"
+                    className={style.videoPlayer}
+                    onError={() => toast.error("Failed to load video.")}
+                  />
                 ) : (
                   <p>No video available for this lesson.</p>
                 )}
@@ -107,21 +122,23 @@ const CourseLessons = () => {
           {/* Lesson List (Right) */}
           <div className={style.lessonList}>
             <h2>Course Content</h2>
-            {course.lessons.length === 0 ? (
+            {!course.lessons || course.lessons.length === 0 ? (
               <p>No lessons available.</p>
             ) : (
               <ul className={style.lessonItems}>
-                {course.lessons.map((lesson) => (
+                {course.lessons.map((lesson, idx) => (
                   <li
-                    key={lesson._id}
+                    key={lesson._id || idx}
                     className={`${style.lessonItem} ${
                       currentLesson?._id === lesson._id ? style.active : ""
                     }`}
                     onClick={() => handleLessonSelect(lesson)}
+                    tabIndex={0}
+                    aria-current={
+                      currentLesson?._id === lesson._id ? "true" : undefined
+                    }
                   >
-                    <span className={style.lessonNumber}>
-                      {course.lessons.indexOf(lesson) + 1}.
-                    </span>
+                    <span className={style.lessonNumber}>{idx + 1}.</span>
                     <span className={style.lessonTitle}>{lesson.title}</span>
                   </li>
                 ))}
