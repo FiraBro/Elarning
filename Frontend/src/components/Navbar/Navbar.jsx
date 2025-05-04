@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
@@ -8,26 +8,72 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  // Sync auth state with localStorage and across tabs
+  const syncAuthState = () => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
 
     let role = localStorage.getItem("userRole");
-    // Normalize role: if no token or role is missing or "null" string, set to null
     if (!token || !role || role === "null") {
       role = null;
     }
     setUserRole(role);
-  }, []);
+  };
 
   useEffect(() => {
+    syncAuthState();
+    window.addEventListener("storage", syncAuthState);
+    return () => window.removeEventListener("storage", syncAuthState);
+  }, []);
+
+  // Accessibility: Focus trap and Escape key
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const focusableEls = mobileMenuRef.current
+      ? mobileMenuRef.current.querySelectorAll(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      : [];
+    const firstEl = focusableEls[0];
+    const lastEl = focusableEls[focusableEls.length - 1];
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setIsMobileMenuOpen(false);
+      }
+      if (e.key === "Tab" && focusableEls.length) {
+        // Focus trap
+        if (e.shiftKey && document.activeElement === firstEl) {
+          e.preventDefault();
+          lastEl.focus();
+        } else if (!e.shiftKey && document.activeElement === lastEl) {
+          e.preventDefault();
+          firstEl.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    // Focus the first element when menu opens
+    firstEl && firstEl.focus();
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isMobileMenuOpen]);
+
+  // Lock body scroll when menu is open
+  useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.classList.add(styles.menuOpen);
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.classList.remove(styles.menuOpen);
+      document.body.style.overflow = "";
     }
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isMobileMenuOpen]);
 
   const handleLogout = () => {
@@ -40,18 +86,17 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  const handleMenuButtonClick = () => setIsMobileMenuOpen((open) => !open);
 
-  // Debugging - remove or comment out in production
-  // console.log("isLoggedIn:", isLoggedIn, "userRole:", userRole);
+  const handleMobileLinkClick = () => setIsMobileMenuOpen(false);
 
   return (
     <>
       <nav className={styles.navbar}>
         <div className={styles.logo}>
-          <Link to="/">EduLearn</Link>
+          <Link to="/">
+            Edu<span>Learn</span>
+          </Link>
         </div>
 
         {/* Desktop Navigation */}
@@ -78,7 +123,6 @@ const Navbar = () => {
             </>
           )}
 
-          {/* Show Become Instructor only if logged in and userRole is "admin" */}
           {isLoggedIn && userRole === "admin" && (
             <Link to="/admin/dashboard" className={styles.instructorButton}>
               Admin Dashboard
@@ -89,11 +133,13 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         <div className={styles.mobileMenu}>
           <button
-            onClick={toggleMobileMenu}
+            onClick={handleMenuButtonClick}
             className={`${styles.menuButton} ${
               isMobileMenuOpen ? styles.active : ""
             }`}
             aria-label="Mobile menu"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobileNavLinks"
           >
             {isMobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
@@ -102,29 +148,32 @@ const Navbar = () => {
 
       {/* Mobile Menu Dropdown */}
       <div
+        id="mobileNavLinks"
         className={`${styles.mobileNavLinks} ${
           isMobileMenuOpen ? styles.active : ""
         }`}
         aria-hidden={!isMobileMenuOpen}
+        tabIndex={isMobileMenuOpen ? 0 : -1}
+        ref={mobileMenuRef}
       >
-        <Link to="/browse" onClick={toggleMobileMenu}>
+        <Link to="/browse" onClick={handleMobileLinkClick}>
           Browse Courses
         </Link>
         {isLoggedIn && userRole === "student" && (
-          <Link to="/mycourse" onClick={toggleMobileMenu}>
+          <Link to="/mycourse" onClick={handleMobileLinkClick}>
             My Courses
           </Link>
         )}
 
         {isLoggedIn ? (
           <>
-            <Link to="/profile" onClick={toggleMobileMenu}>
+            <Link to="/profile" onClick={handleMobileLinkClick}>
               Profile
             </Link>
             <button
               onClick={() => {
                 handleLogout();
-                toggleMobileMenu();
+                handleMobileLinkClick();
               }}
               className={styles.logoutButton}
             >
@@ -133,20 +182,19 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <Link to="/signup" onClick={toggleMobileMenu}>
+            <Link to="/signup" onClick={handleMobileLinkClick}>
               Sign Up
             </Link>
-            <Link to="/login" onClick={toggleMobileMenu}>
+            <Link to="/login" onClick={handleMobileLinkClick}>
               Login
             </Link>
           </>
         )}
 
-        {/* Show Become Instructor only if logged in and userRole is "admin" */}
         {isLoggedIn && userRole === "admin" && (
           <Link
             to="/admin/dashboard"
-            onClick={toggleMobileMenu}
+            onClick={handleMobileLinkClick}
             className={styles.instructorButton}
           >
             Admin Dashboard
@@ -160,7 +208,9 @@ const Navbar = () => {
           className={`${styles.backdrop} ${
             isMobileMenuOpen ? styles.active : ""
           }`}
-          onClick={toggleMobileMenu}
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-label="Close mobile menu"
+          tabIndex={0}
         />
       )}
     </>
@@ -168,4 +218,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
