@@ -9,15 +9,15 @@ const MyCourse = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
   useEffect(() => {
     let isMounted = true; // For cleanup
 
     const fetchEnrolledCourses = async () => {
       try {
         const response = await courseService.getEnrolledCourses();
+        console.log(response);
         if (isMounted) {
-          setCourses(response?.data?.courses || []);
+          setCourses(response || []);
         }
       } catch (err) {
         if (isMounted) {
