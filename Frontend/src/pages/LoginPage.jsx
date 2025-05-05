@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import AuthForm from "../components/AuthForm/AuthForm";
 import styles from "./LoginPage.module.css";
 import { userService } from "../service/api";
@@ -8,42 +8,74 @@ import "react-toastify/dist/ReactToastify.css";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Redirect if already logged in
+  const [loading, setLoading] = useState(false);
+
+  const from = (location.state && location.state.from) || "/";
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userRole = localStorage.getItem("userRole");
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    const userRole =
+      localStorage.getItem("userRole") || sessionStorage.getItem("userRole");
 
     if (token && userRole) {
       if (userRole === "admin") {
         navigate("/admin/dashboard", { replace: true });
       } else {
-        navigate("/", { replace: true });
+        navigate(from, { replace: true });
       }
     }
-  }, [navigate]);
+  }, [navigate, from]);
 
-  const handleLogin = async (credentials) => {
-    try {
-      const { data } = await userService.login(credentials);
-      if (data.user.role === "admin") {
-        navigate("/admin/dashboard", { replace: true });
-      } else {
-        navigate("/", { replace: true });
+  const handleLogin = useCallback(
+    async (credentials, rememberMe) => {
+      setLoading(true);
+      try {
+        const { data } = await userService.login(credentials);
+
+        if (rememberMe) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userRole", data.user.role);
+        } else {
+          sessionStorage.setItem("token", data.token);
+          sessionStorage.setItem("userRole", data.user.role);
+        }
+
+        if (data.user.role === "admin") {
+          navigate("/admin/dashboard", { replace: true });
+        } else {
+          navigate(from, { replace: true });
+        }
+      } catch (error) {
+        toast.error(
+          "Login failed: " + (error.response?.data?.message || error.message)
+        );
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      toast.error(
-        "Login failed: " + (error.response?.data?.message || error.message)
-      );
-    }
-  };
+    },
+    [navigate, from]
+  );
 
   return (
     <div className={styles.loginPage}>
-      <ToastContainer position="top-center" autoClose={3000} />
-      <h1>Login</h1>
-      <AuthForm onSubmit={handleLogin} isLogin={true} />
-
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        role="alert"
+      />
+      <h1 tabIndex={-1}>Login</h1>
+      <AuthForm onSubmit={handleLogin} isLogin={true} disabled={loading} />
       <div style={{ marginTop: "15px" }}>
         <Link
           to="/forgot-password"
@@ -52,7 +84,6 @@ const LoginPage = () => {
           Forgot Password?
         </Link>
       </div>
-
       <p className={styles.signupLink}>
         Don't have an account? <Link to="/signup">Sign up</Link>
       </p>
