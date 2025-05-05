@@ -2,14 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { userService } from "../../service/api";
 import Navbar from "../Navbar/Navbar";
-// import UpdatePassword from "../.."; // Adjust if needed
 import styles from "./Profile.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-// Helper to get image URL using Vite env variable
-const getUserImageUrl = (photo) =>
-  `${import.meta.env.VITE_API_URL}/uploads/userImage/${photo}?${Date.now()}`;
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -21,6 +16,7 @@ const Profile = () => {
     email: "",
     photo: null,
   });
+
   const [showUpdatePassword, setShowUpdatePassword] = useState(false);
 
   const navigate = useNavigate();
@@ -166,9 +162,13 @@ const Profile = () => {
               <div className={styles.avatar} aria-label="User avatar">
                 {user?.photo ? (
                   <img
-                    src={getUserImageUrl(user.photo)}
+                    src={userService.getUserImageUrl(user.photo)}
                     alt={`Profile photo of ${user.name}`}
                     className={styles.avatarImage}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.src = "/default-avatar.jpg";
+                    }}
                   />
                 ) : (
                   <span className={styles.avatarFallback}>
