@@ -13,11 +13,16 @@ const validator = require("validator");
  * @access  Public
  */
 exports.register = catchAsync(async (req, res, next) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, passwordConfirm, role } = req.body;
 
   // 1) Validate input
-  if (!name || !email || !password) {
-    return next(new AppError("Name, email and password are required", 400));
+  if (!name || !email || !password || !passwordConfirm) {
+    return next(
+      new AppError("Name, email,password and passwordConfirm are required", 400)
+    );
+  }
+  if (password !== passwordConfirm) {
+    return next(new AppError("Passwords do not match", 400));
   }
 
   if (!validator.isEmail(email)) {
@@ -136,7 +141,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(404).json({ status: "fail", message: "User not found" });
+    return res.status(200).json({
+      status: "success",
+      message: "If that email is registered, we’ve sent reset instructions.",
+    });
   }
 
   const resetToken = crypto.randomBytes(32).toString("hex");
@@ -207,7 +215,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
 
-  // 1. Check if token exists in Authorization header
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -221,11 +228,15 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 2. Verify token
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  console.log(decoded);
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    return next(
+      new AppError("Invalid or expired token. Please log in again.", 401)
+    );
+  }
 
-  // 3. Check if user still exists
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
     return next(
@@ -233,10 +244,17 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 4. Grant access to protected route
+  // Optional: Check if user changed password after token issued
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError("User recently changed password! Please log in again.", 401)
+    );
+  }
+
   req.user = currentUser;
   next();
 });
+
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
