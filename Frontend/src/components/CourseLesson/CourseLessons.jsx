@@ -6,8 +6,7 @@ import { courseService } from "../../service/api";
 import Navbar from "../Navbar/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const API_URL = import.meta.env.VITE_API_URL;
+export const IMAGE_BASE_URL = import.meta.env.VITE_APP_STATIC_URL || "";
 
 const CourseLessons = () => {
   const { courseId } = useParams();
@@ -16,7 +15,6 @@ const CourseLessons = () => {
   const [currentLesson, setCurrentLesson] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   useEffect(() => {
     fetchCourseLessons();
     // eslint-disable-next-line
@@ -28,6 +26,9 @@ const CourseLessons = () => {
       setError(null);
       const { data } = await courseService.getCourseLessons(courseId);
       const courseData = data?.data?.course || data?.course;
+      console.log(courseData.lessons[0].videoUrl);
+      // console.log({Vide:currentLesson.videoUrl});
+
       setCourse(courseData);
       if (courseData?.lessons && courseData.lessons.length > 0) {
         setCurrentLesson(courseData.lessons[0]);
@@ -99,7 +100,7 @@ const CourseLessons = () => {
                   <ReactPlayer
                     url={
                       currentLesson.videoUrl.startsWith("uploads")
-                        ? `${API_URL}/${currentLesson.videoUrl}`
+                        ? `${IMAGE_BASE_URL}/${currentLesson.videoUrl}`
                         : currentLesson.videoUrl
                     }
                     controls
