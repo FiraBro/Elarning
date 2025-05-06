@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       validate: [validator.isEmail, "Please provide a valid email"],
-      index: true,
+      // Removed index: true to avoid duplicate index warning
     },
     password: {
       type: String,
@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema(
     },
     photo: {
       type: String,
-      default: "default.jpj",
+      default: "default.jpg", // Fixed typo here
     },
     bio: {
       type: String,
@@ -71,11 +71,6 @@ const userSchema = new mongoose.Schema(
         push: { type: Boolean, default: false },
       },
       theme: { type: String, enum: ["light", "dark"], default: "light" },
-    },
-    active: {
-      type: Boolean,
-      default: true,
-      select: false,
     },
   },
   {
