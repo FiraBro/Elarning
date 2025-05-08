@@ -26,6 +26,15 @@ const courseSchema = new mongoose.Schema({
     enum: ["Beginner", "Intermediate", "Advanced"],
     default: "Beginner",
   },
+  averageRating: {
+    type: Number,
+    default: 0,
+  },
+  numberOfReviews: {
+    type: Number,
+    default: 0,
+  },
+
   lessons: [
     {
       title: { type: String, required: true },
@@ -35,5 +44,13 @@ const courseSchema = new mongoose.Schema({
   banner: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
+courseSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "course",
+  localField: "_id",
+});
 
-module.exports = mongoose.model('Course',courseSchema)
+courseSchema.set("toObject", { virtuals: true });
+courseSchema.set("toJSON", { virtuals: true });
+
+module.exports = mongoose.model("Course", courseSchema);
