@@ -92,7 +92,14 @@ exports.getAllCourses = catchAsync(async (req, res, next) => {
  */
 
 exports.getCourse = catchAsync(async (req, res, next) => {
-  const course = await Course.findById(req.params.id);
+  const course = await Course.findById(req.params.id)
+    .populate("instructor", "name email avatar")
+    .populate({
+      path: "reviews",
+      select: "rating comment user createdAt",
+      populate: { path: "user", select: "name avatar" },
+    });
+
   if (!course) {
     return next(new AppError("No course is found with this ID"));
   }
@@ -286,5 +293,4 @@ exports.trackEnrollment = catchAsync(async (req, res, next) => {
     status: "success",
     message: "Enrollment successful",
   });
-  next(); // Proceed to payment processing
 });
