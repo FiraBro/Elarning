@@ -1,0 +1,230 @@
+.reviewSection {
+  padding: 3rem 1rem;
+  background-color: var(--bg, #f9fafb);
+  color: var(--text, #111827);
+  text-align: center;
+  transition: background 0.3s, color 0.3s;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: inherit;
+}
+
+.cardWrapper {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 300px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--card, white);
+  color: inherit;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+  box-sizing: border-box;
+}
+
+.avatarContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.username {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.stars {
+  color: #fbbf24;
+  margin-top: 0.5rem;
+}
+
+.comment {
+  font-style: italic;
+  color: lightgray;
+  margin-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.course {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 1rem;
+}
+
+.pageDots {
+  margin-top: 1rem;
+}
+
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 0 6px;
+  border-radius: 50%;
+  background-color: #d1d5db;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.activeDot {
+  background-color: #111827;
+}
+
+/* Slide Animations */
+.slide {
+  transition: transform 0.7s ease, opacity 0.7s ease;
+}
+
+.slideInRight {
+  animation: slideInRight 0.7s forwards;
+}
+
+.slideInLeft {
+  animation: slideInLeft 0.7s forwards;
+}
+
+.slideOutLeft {
+  animation: slideOutLeft 0.7s forwards;
+}
+
+.slideOutRight {
+  animation: slideOutRight 0.7s forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Optional: Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111827;
+    --text: #f9fafb;
+    --card: #1f2937;
+  }
+
+  .dot {
+    background-color: #374151;
+  }
+
+  .activeDot {
+    background-color: #f9fafb;
+  }
+}
+
+/* ✅ Responsive Design */
+@media screen and (max-width: 768px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .comment {
+    font-size: 0.95rem;
+  }
+
+  .avatar {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .card {
+    padding: 1.2rem;
+  }
+
+  .comment {
+    font-size: 0.9rem;
+  }
+
+  .username {
+    font-size: 0.95rem;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+}
