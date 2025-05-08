@@ -4,7 +4,6 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const adminMiddleware = require("../middlewares/adminMiddleware");
 const authController = require("../controllers/authController");
 const upload = require("../middlewares/multer");
-const { route } = require("./authRoutes");
 
 const router = express.Router();
 
@@ -66,3 +65,6 @@ router.post(
 router.get("/:id", courseController.getCourse);
 
 module.exports = router;
+
+
+
