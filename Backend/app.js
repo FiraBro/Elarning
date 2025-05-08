@@ -11,6 +11,7 @@ const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const userRoutes = require("./routes/userRoutes");
 const globalErrorHandler = require("./controllers/errorController");
+const reviewRoutes = require("./routes/reviewRoutes");
 const AppError = require("./utils/appError");
 
 const app = express();
@@ -72,6 +73,7 @@ app.use(
 );
 
 // Routes
+app.use("/api/courses/:courseId/reviews", reviewRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/users", userRoutes);
