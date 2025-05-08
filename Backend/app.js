@@ -73,7 +73,7 @@ app.use(
 );
 
 // Routes
-app.use("/api/courses/:courseId/reviews", reviewRoutes);
+app.use("/api/reviews", reviewRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/users", userRoutes);
