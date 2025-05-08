@@ -27,19 +27,6 @@ const userSchema = new mongoose.Schema(
     },
     passwordConfirm: {
       type: String,
-      required: [
-        function () {
-          return this.isModified("password");
-        },
-        "Please confirm your password",
-      ],
-      validate: {
-        // This only works on CREATE and SAVE!!!
-        validator: function (el) {
-          return el === this.password;
-        },
-        message: "Passwords do not match",
-      },
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
