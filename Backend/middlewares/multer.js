@@ -52,3 +52,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 module.exports = upload;
+
+// middleware/upload.js
+// middleware/upload.js
+
