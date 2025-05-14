@@ -1,0 +1,134 @@
+.newsletterSignup {
+  padding: 3rem 2rem;
+  background-color: #0f172a; /* dark background for contrast */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Darker shadow */
+  text-align: center;
+  color: #f3f4f6; /* Light text */
+}
+
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.content h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  color: #e0e7ff; /* Light soft blue */
+}
+
+.content p {
+  font-size: 1rem;
+  color: #9ca3af; /* Muted gray */
+  margin-bottom: 1.5rem;
+}
+
+.signupForm {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.signupForm input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #4b5563; /* Darker border */
+  border-radius: 6px;
+  margin-right: 0.5rem;
+  width: 60%;
+  background-color: #374151; /* Dark background for input */
+  color: #f3f4f6; /* Light text in input */
+}
+
+.signupForm button {
+  padding: 0.75rem 1.25rem;
+  background-color: #2563eb; /* Primary color */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.signupForm button:hover {
+  background-color: #1d4ed8; /* Slightly darker hover effect */
+}
+
+.benefitsList {
+  list-style: none;
+  padding: 0;
+}
+
+.benefitsList li {
+  font-size: 1rem;
+  color: #9ca3af; /* Muted text for list */
+  margin-bottom: 0.5rem;
+}
+
+.benefitsList li span {
+  margin-right: 0.5rem;
+}
+
+.telegramButton {
+  display: inline-block;
+  background-color: #229ed9;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  text-decoration: none;
+  margin: 1rem 0;
+  transition: background 0.2s;
+}
+.telegramButton:hover {
+  background-color: #176ca1;
+}
+.subscriptionForm {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.subscriptionForm input[type="email"] {
+  padding: 0.75rem 1rem;
+  border: 1px solid #4b5563;
+  border-radius: 6px;
+  background-color: #374151;
+  color: #f3f4f6;
+  width: 60%;
+  min-width: 250px;
+}
+
+.subscriptionForm input[type="email"]::placeholder {
+  color: #9ca3af;
+}
+
+.subscriptionForm button {
+  padding: 0.75rem 1.25rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  min-width: 120px;
+  transition: background-color 0.2s;
+}
+
+.subscriptionForm button:hover {
+  background-color: #1d4ed8;
+}
+
+.message {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.message.success {
+  color: #34d399; /* green for success */
+}
+
+.message.error {
+  color: #f87171; /* red for error */
+}
