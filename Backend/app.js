@@ -57,7 +57,7 @@ app.use(
 app.use("/uploads", (req, res, next) => {
   res.header(
     "Access-Control-Allow-Origin",
-    process.env.FRONTEND_URL || "http://localhost:5173"
+    process.env.FRONTEND_URL || "http://localhost:5174"
   );
   res.header("Access-Control-Allow-Credentials", "true");
   next();
