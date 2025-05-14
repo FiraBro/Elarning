@@ -13,6 +13,7 @@ const userRoutes = require("./routes/userRoutes");
 const globalErrorHandler = require("./controllers/errorController");
 const reviewRoutes = require("./routes/reviewRoutes");
 const AppError = require("./utils/appError");
+const subscriberRoutes = require("./routes/subscriptionRoutes");
 
 const app = express();
 app.set("trust proxy", 1);
@@ -77,6 +78,7 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/newsletter", subscriberRoutes);
 
 // 404 handler
 // app.all("*", (req, res, next) => {
