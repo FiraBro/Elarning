@@ -40,7 +40,6 @@ export default function CourseList() {
       setTotalPages(data.totalPages || 1);
     } catch (error) {
       setError("Failed to load courses. Please try again.");
-      toast.error("Failed to load courses.");
     } finally {
       setLoading(false);
     }
