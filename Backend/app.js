@@ -22,7 +22,7 @@ app.set("trust proxy", 1);
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
-  })
+  }),
 );
 
 // Logging
@@ -51,14 +51,14 @@ app.use(
     origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE"],
-  })
+  }),
 );
 
 // Middleware to add CORS headers on static files (including 304)
 app.use("/uploads", (req, res, next) => {
   res.header(
     "Access-Control-Allow-Origin",
-    process.env.FRONTEND_URL || "http://localhost:5174"
+    process.env.FRONTEND_URL || "http://localhost:5174",
   );
   res.header("Access-Control-Allow-Credentials", "true");
   next();
@@ -70,7 +70,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(
   "/img/users",
-  express.static(path.join(__dirname, "uploads/userImage"))
+  express.static(path.join(__dirname, "uploads/userImage")),
 );
 
 // Routes
