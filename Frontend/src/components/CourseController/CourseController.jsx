@@ -1,142 +1,112 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Video,
+  Image as ImageIcon,
+  AlertCircle,
+  Loader2,
+  X,
+} from "lucide-react";
 import style from "./CourseController.module.css";
 import { courseService } from "../../service/api";
 
 const CourseController = () => {
   const [courses, setCourses] = useState([]);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    price: "",
-    category: "",
-    level: "Beginner",
-    lessonVideos: [], // Array of { file, preview, title }
-    banner: null,
-    bannerPreview: "",
-  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [editingCourseId, setEditingCourseId] = useState(null);
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
+  const initialFormState = {
+    title: "",
+    description: "",
+    price: "",
+    category: "",
+    level: "Beginner",
+    lessonVideos: [],
+    banner: null,
+    bannerPreview: "",
+  };
 
-  const fetchCourses = async () => {
+  const [formData, setFormData] = useState(initialFormState);
+
+  // --- MEMORY CLEANUP ---
+  useEffect(() => {
+    return () => {
+      formData.lessonVideos.forEach((v) => URL.revokeObjectURL(v.preview));
+      if (formData.bannerPreview) URL.revokeObjectURL(formData.bannerPreview);
+    };
+  }, [formData.lessonVideos, formData.bannerPreview]);
+
+  const fetchCourses = useCallback(async () => {
     try {
       setLoading(true);
-      const { data } = await courseService.getAllCourses();
-      setCourses(data.courses);
+      const data = await courseService.getAllCourses();
+      setCourses(data.data?.courses || []);
     } catch (err) {
-      setError("Failed to load courses");
+      setError("Failed to synchronize with server.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
 
-  // Handle video title change
-  const handleVideoTitleChange = (index, value) => {
-    setFormData((prev) => {
-      const updatedVideos = [...prev.lessonVideos];
-      updatedVideos[index] = { ...updatedVideos[index], title: value };
-      return { ...prev, lessonVideos: updatedVideos };
-    });
-  };
-
-  // Handle multiple video files selection
+  // --- HANDLERS ---
   const handleFileChange = (e) => {
     const { name, files } = e.target;
+    if (!files.length) return;
+
     if (name === "lessonVideos") {
-      const fileArray = Array.from(files);
-      const newVideos = fileArray.map((file) => ({
+      const newVideos = Array.from(files).map((file) => ({
         file,
         preview: URL.createObjectURL(file),
-        title: "",
+        title: file.name.replace(/\.[^/.]+$/, ""), // Auto-fill title with filename
       }));
-      setFormData((prev) => ({
-        ...prev,
-        lessonVideos: newVideos,
+      setFormData((p) => ({
+        ...p,
+        lessonVideos: [...p.lessonVideos, ...newVideos],
       }));
     }
-    if (name === "banner" && files[0]) {
-      setFormData((prev) => ({
-        ...prev,
+
+    if (name === "banner") {
+      setFormData((p) => ({
+        ...p,
         banner: files[0],
         bannerPreview: URL.createObjectURL(files[0]),
       }));
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      title: "",
-      description: "",
-      price: "",
-      category: "",
-      level: "Beginner",
-      lessonVideos: [],
-      banner: null,
-      bannerPreview: "",
+  const removeVideo = (index) => {
+    setFormData((p) => {
+      const filtered = p.lessonVideos.filter((_, i) => i !== index);
+      URL.revokeObjectURL(p.lessonVideos[index].preview);
+      return { ...p, lessonVideos: filtered };
     });
-    setUploadProgress(0);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    // Validate required fields
-    if (!formData.title.trim()) {
-      setError("Title is required.");
-      return;
-    }
-    if (!formData.description.trim()) {
-      setError("Description is required.");
-      return;
-    }
-    if (
-      !formData.price ||
-      isNaN(formData.price) ||
-      Number(formData.price) < 0
-    ) {
-      setError("A valid price is required.");
-      return;
-    }
-    if (formData.lessonVideos.length === 0) {
-      setError("At least one lesson video is required.");
-      return;
-    }
-    if (formData.lessonVideos.some((video) => !video.title.trim())) {
-      setError("All videos must have a title.");
-      return;
-    }
-
     const form = new FormData();
-    form.append("title", formData.title);
-    form.append("description", formData.description);
-    form.append("price", formData.price);
-    form.append("category", formData.category);
-    form.append("level", formData.level);
-
-    if (formData.banner) {
-      form.append("banner", formData.banner);
-    }
-
-    formData.lessonVideos.forEach((video, index) => {
-      form.append("lessonVideos", video.file); // Use "lessonVideos" instead of "lessonVideos[]"
-      form.append(`lessonTitles[${index}]`, video.title);
+    Object.keys(formData).forEach((key) => {
+      if (!["lessonVideos", "banner", "bannerPreview"].includes(key)) {
+        form.append(key, formData[key]);
+      }
     });
 
-    // Debug FormData
-    for (let [key, value] of form.entries()) {
-      console.log(`${key}:`, value);
-    }
+    if (formData.banner) form.append("banner", formData.banner);
+
+    formData.lessonVideos.forEach((video, index) => {
+      form.append("lessonVideos", video.file);
+      form.append(`lessonTitles[${index}]`, video.title);
+    });
 
     try {
       if (editingCourseId) {
@@ -144,253 +114,200 @@ const CourseController = () => {
       } else {
         await courseService.createCourse(form, setUploadProgress);
       }
-      const { data } = await courseService.getAllCourses();
-      setCourses(data.courses);
-      resetForm();
+      await fetchCourses();
+      setFormData(initialFormState);
       setEditingCourseId(null);
+      setUploadProgress(0);
     } catch (err) {
-      setError(err.message || "Operation failed.");
+      setError(err.message || "Failed to save course.");
       setUploadProgress(0);
     }
   };
 
-  const handleDelete = async (courseId) => {
-    if (!window.confirm("Are you sure you want to delete this course?")) return;
-    try {
-      await courseService.deleteCourse(courseId);
-      setCourses((prevCourses) =>
-        prevCourses.filter((course) => course._id !== courseId)
-      );
-    } catch (err) {
-      setError(err.message || "Failed to delete course");
-    }
-  };
-
-  const handleEdit = (course) => {
-    setEditingCourseId(course._id);
-    setFormData({
-      title: course.title || "",
-      description: course.description || "",
-      price: course.price || "",
-      category: course.category || "",
-      level: course.level || "Beginner",
-      lessonVideos: [],
-      banner: null,
-      bannerPreview: course.bannerUrl || "",
-    });
-    document.getElementById("addForm")?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    <div className={style.course}>
-      <div className={style.coursebg}>
-        <div className={style.headCourseOne}>
-          <h2>Course Management</h2>
-          <button
-            className={style.addButton}
-            onClick={() => {
-              resetForm();
-              setEditingCourseId(null);
-              document
-                .getElementById("addForm")
-                ?.scrollIntoView({ behavior: "smooth" });
-            }}
-          >
-            Add New Course
-          </button>
+    <div className={style.container}>
+      {/* HEADER SECTION */}
+      <header className={style.dashboardHeader}>
+        <div>
+          <h1>Course Management</h1>
+          <p>Create, update, and manage your educational content</p>
         </div>
+        <button
+          className={style.btnPrimary}
+          onClick={() => {
+            setEditingCourseId(null);
+            setFormData(initialFormState);
+          }}
+        >
+          <Plus size={18} /> New Course
+        </button>
+      </header>
 
-        {error && <div className={style.error}>{error}</div>}
-
-        {loading ? (
-          <div className={style.loading}>Loading courses...</div>
-        ) : (
-          <div className={style.courseList}>
-            <div className={style.gridHeader}>
-              <span>Title</span>
-              <span className={style.mobileHidden}>Category</span>
-              <span>Level</span>
-              <span>Price</span>
-              <span>Actions</span>
+      <div className={style.layoutGrid}>
+        {/* LIST SECTION */}
+        <section className={style.card}>
+          <h3>Active Courses</h3>
+          {loading ? (
+            <div className={style.loader}>
+              <Loader2 className={style.spin} /> Loading...
             </div>
-            {courses.map((course) => (
-              <div key={course._id} className={style.courseItem}>
-                <div className={style.courseTitle}>{course.title}</div>
-                <div className={style.mobileHidden}>{course.category}</div>
-                <div>{course.level}</div>
-                <div className={style.mobileHidden}>
-                  ${course.price?.toFixed(2)}
-                </div>
-                <div className={style.actions}>
-                  <button
-                    className={style.editBtn}
-                    onClick={() => handleEdit(course)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className={style.deleteBtn}
-                    onClick={() => handleDelete(course._id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className={style.tableWrapper}>
+              <table className={style.table}>
+                <thead>
+                  <tr>
+                    <th>Course</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {courses.map((course) => (
+                    <tr key={course._id}>
+                      <td>
+                        <div className={style.courseTitleCell}>
+                          <strong>{course.title}</strong>
+                          <span>{course.level}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span className={style.badge}>{course.category}</span>
+                      </td>
+                      <td>${course.price}</td>
+                      <td>
+                        <div className={style.tableActions}>
+                          <button
+                            onClick={() => setEditingCourseId(course._id)}
+                            className={style.iconBtn}
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(course._id)}
+                            className={`${style.iconBtn} ${style.delete}`}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
 
-      <div id="addForm" className={style.coursebg}>
-        <h3>
-          {editingCourseId ? `Edit "${formData.title}"` : "Add New Course"}
-        </h3>
-        <form onSubmit={handleSubmit} className={style.form}>
-          <div className={style.formRow}>
-            <div className={style.formGroup}>
-              <label>Title*</label>
+        {/* FORM SECTION */}
+        <section className={style.card}>
+          <h3>{editingCourseId ? "Edit Course" : "Course Details"}</h3>
+          <form onSubmit={handleSubmit} className={style.mainForm}>
+            <div className={style.inputGroup}>
+              <label>Title</label>
               <input
-                name="title"
                 value={formData.title}
-                onChange={handleChange}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+                placeholder="e.g. Master React in 30 Days"
                 required
               />
             </div>
-            <div className={style.formGroup}>
-              <label>Price ($)*</label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                min="0"
-                step="0.01"
-                required
-              />
-            </div>
-          </div>
 
-          <div className={style.formRow}>
-            <div className={style.formGroup}>
-              <label>Category*</label>
-              <input
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className={style.formGroup}>
-              <label>Level</label>
-              <select
-                name="level"
-                value={formData.level}
-                onChange={handleChange}
-              >
-                <option value="Beginner">Beginner</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Advanced">Advanced</option>
-              </select>
-            </div>
-          </div>
-
-          <div className={style.formGroup}>
-            <label>Description*</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              required
-              rows={5}
-            />
-          </div>
-
-          <div className={style.formGroup}>
-            <label>Course Videos* (Select multiple)</label>
-            <input
-              type="file"
-              name="lessonVideos"
-              multiple
-              accept="video/*"
-              onChange={handleFileChange}
-              required={!editingCourseId && formData.lessonVideos.length === 0}
-            />
-          </div>
-
-          {formData.lessonVideos.length > 0 && (
-            <div className={style.videoList}>
-              {formData.lessonVideos.map((video, idx) => (
-                <div key={idx} className={style.videoWithTitle}>
-                  <label>Video {idx + 1} Title*</label>
-                  <input
-                    type="text"
-                    value={video.title}
-                    onChange={(e) =>
-                      handleVideoTitleChange(idx, e.target.value)
-                    }
-                    placeholder={`Video ${idx + 1} title`}
-                    required
-                  />
-                  <video width="100%" controls className={style.videoPreview}>
-                    <source src={video.preview} />
-                  </video>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className={style.formGroup}>
-            <label>Banner Image</label>
-            <input
-              type="file"
-              name="banner"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-            {formData.bannerPreview && (
-              <img
-                src={formData.bannerPreview}
-                alt="Banner preview"
-                className={style.imagePreview}
-              />
-            )}
-          </div>
-
-          {uploadProgress > 0 && (
-            <div className={style.progressBar}>
-              <div
-                className={style.progressFill}
-                style={{ width: `${uploadProgress}%` }}
-              >
-                {uploadProgress}%
+            <div className={style.row}>
+              <div className={style.inputGroup}>
+                <label>Price ($)</label>
+                <input
+                  type="number"
+                  value={formData.price}
+                  onChange={(e) =>
+                    setFormData({ ...formData, price: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className={style.inputGroup}>
+                <label>Level</label>
+                <select
+                  value={formData.level}
+                  onChange={(e) =>
+                    setFormData({ ...formData, level: e.target.value })
+                  }
+                >
+                  <option>Beginner</option>
+                  <option>Intermediate</option>
+                  <option>Advanced</option>
+                </select>
               </div>
             </div>
-          )}
 
-          <button
-            type="submit"
-            className={style.submitButton}
-            disabled={uploadProgress > 0 && uploadProgress < 100}
-          >
-            {uploadProgress > 0
-              ? "Uploading..."
-              : editingCourseId
-              ? "Update Course"
-              : "Create Course"}
-          </button>
-          {editingCourseId && (
+            <div className={style.inputGroup}>
+              <label>Description</label>
+              <textarea
+                rows="4"
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                required
+              />
+            </div>
+
+            {/* VIDEO UPLOAD ZONE */}
+            <div className={style.uploadZone}>
+              <label className={style.fileLabel}>
+                <Video size={20} />
+                <span>Upload Lesson Videos</span>
+                <input
+                  type="file"
+                  multiple
+                  accept="video/*"
+                  onChange={handleFileChange}
+                  hidden
+                />
+              </label>
+
+              <div className={style.previewList}>
+                {formData.lessonVideos.map((video, idx) => (
+                  <div key={idx} className={style.videoItem}>
+                    <input
+                      value={video.title}
+                      onChange={(e) => {
+                        const newVids = [...formData.lessonVideos];
+                        newVids[idx].title = e.target.value;
+                        setFormData({ ...formData, lessonVideos: newVids });
+                      }}
+                    />
+                    <button type="button" onClick={() => removeVideo(idx)}>
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {uploadProgress > 0 && (
+              <div className={style.progressContainer}>
+                <div className={style.progressTrack}>
+                  <div
+                    className={style.progressBar}
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                <span>Uploading {uploadProgress}%</span>
+              </div>
+            )}
+
             <button
-              type="button"
-              className={style.cancelButton}
-              onClick={() => {
-                resetForm();
-                setEditingCourseId(null);
-              }}
+              type="submit"
+              className={style.btnSubmit}
+              disabled={uploadProgress > 0}
             >
-              Cancel Edit
+              {editingCourseId ? "Update Course" : "Publish Course"}
             </button>
-          )}
-        </form>
+          </form>
+        </section>
       </div>
     </div>
   );
