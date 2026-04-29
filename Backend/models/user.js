@@ -23,10 +23,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please provide a password"],
       minlength: [8, "Password must be at least 8 characters"],
-      select: false, // Never show password in output
+      select: false,
     },
     passwordConfirm: {
       type: String,
+      validate: {
+        // This only works on CREATE and SAVE!!!
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: "Passwords are not the same!",
+      },
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
@@ -75,61 +82,59 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
-// Indexes for better query performance
-userSchema.index({ email: 1 });
+// Indexes
 userSchema.index({ role: 1 });
 userSchema.index({ name: "text", email: "text", bio: "text" });
 
-// Password encryption middleware
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+// 1) Password encryption middleware
+userSchema.pre("save", async function () {
+  // Only run this function if password was actually modified
+  if (!this.isModified("password")) return;
 
+  // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
 
-  // Remove passwordConfirm field before saving to DB
+  // Delete passwordConfirm field
   this.passwordConfirm = undefined;
-
-  next();
 });
 
-// Update passwordChangedAt when password is modified
-userSchema.pre("save", function (next) {
-  if (!this.isModified("password") || this.isNew) return next();
+// 2) Update passwordChangedAt property
+userSchema.pre("save", function () {
+  if (!this.isModified("password") || this.isNew) return;
 
-  this.passwordChangedAt = Date.now() - 1000; // Ensure token is created after password change
-  next();
+  this.passwordChangedAt = Date.now() - 1000;
 });
 
-// Filter out inactive users by default
-userSchema.pre(/^find/, function (next) {
+// 3) Filter out inactive users (Fixed Query Middleware)
+// THE ULTIMATE FIX FOR LINE 117
+userSchema.pre(/^find/, function () {
   this.find({ active: { $ne: false } });
-  next();
+  // No next() needed here for synchronous query manipulation
 });
 
-// Instance method to check password
+// Instance methods
 userSchema.methods.correctPassword = async function (
   candidatePassword,
-  userPassword
+  userPassword,
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-// Instance method to check if password changed after token was issued
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
-      10
+      10,
     );
     return JWTTimestamp < changedTimestamp;
   }
+  // False means NOT changed
   return false;
 };
 
-// Instance method to create password reset token
 userSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString("hex");
 
@@ -138,12 +143,11 @@ userSchema.methods.createPasswordResetToken = function () {
     .update(resetToken)
     .digest("hex");
 
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
 };
 
-// Instance method to create email verification token
 userSchema.methods.createEmailVerificationToken = function () {
   const verificationToken = crypto.randomBytes(32).toString("hex");
 
@@ -152,12 +156,12 @@ userSchema.methods.createEmailVerificationToken = function () {
     .update(verificationToken)
     .digest("hex");
 
-  this.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+  this.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000;
 
   return verificationToken;
 };
 
-// Virtual for user's display name
+// Virtuals
 userSchema.virtual("displayName").get(function () {
   return this.name || this.email.split("@")[0];
 });
