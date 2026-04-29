@@ -1,88 +1,88 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { NavLink } from "react-router-dom";
-import styles from "../Sidebar/Sidebar.module.css";
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+  LayoutDashboard,
+  BookOpen,
+  Users,
+  Home,
+  LogOut,
+  Menu,
+  X,
+} from "lucide-react";
+import styles from "./Sidebar.module.css";
 
 const menuItems = [
-  { to: "/admin/dashboard", label: "Dashboard" },
-  { to: "/admin/courses", label: "Course Management" },
-  { to: "/admin/users", label: "User Management" },
+  {
+    to: "/admin/dashboard",
+    label: "Dashboard",
+    icon: <LayoutDashboard size={20} />,
+  },
+  { to: "/admin/courses", label: "Courses", icon: <BookOpen size={20} /> },
+  { to: "/admin/users", label: "Users", icon: <Users size={20} /> },
 ];
 
 const Sidebar = () => {
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isMobileView, setIsMobileView] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const checkScreenSize = useCallback(() => {
-    if (typeof window !== "undefined") {
-      setIsMobileView(window.innerWidth <= 768);
-    }
-  }, []);
-
-  useEffect(() => {
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, [checkScreenSize]);
-
-  // Close sidebar on Escape key
-  useEffect(() => {
-    if (!isMobileMenuOpen) return;
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") setMobileMenuOpen(false);
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isMobileMenuOpen]);
+  // Close sidebar on mobile when navigating
+  const handleNavClick = () => {
+    if (window.innerWidth <= 768) setIsOpen(false);
+  };
 
   return (
     <>
-      {isMobileView && (
-        <button
-          className={styles.mobileMenuButton}
-          onClick={() => setMobileMenuOpen((open) => !open)}
-          aria-label="Toggle menu"
-          aria-expanded={isMobileMenuOpen}
-          aria-controls="sidebarNav"
-        >
-          {/* Hamburger */}
-          <div className={styles.hamburger}>{/* ... */}</div>
+      {/* Mobile Header / Toggle */}
+      <div className={styles.mobileHeader}>
+        <button onClick={() => setIsOpen(!isOpen)} className={styles.toggleBtn}>
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-      )}
+        <span className={styles.mobileLogo}>Admin Panel</span>
+      </div>
 
-      <nav
-        id="sidebarNav"
-        role="navigation"
-        className={`${styles.sidebar} ${
-          isMobileView && !isMobileMenuOpen ? styles.hidden : ""
-        }`}
-      >
-        <div className={styles.sidebarContent}>
-          <NavLink to="/" className={styles.sidebarTitle}>
-            Back To Home
-          </NavLink>
-          <div className={styles.navLinks}>
-            {menuItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  isActive ? `${styles.link} ${styles.active}` : styles.link
-                }
-                onClick={() => isMobileView && setMobileMenuOpen(false)}
-              >
-                {item.label}
-              </NavLink>
-            ))}
+      <nav className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+        <div className={styles.sidebarHeader}>
+          <div className={styles.logoContainer}>
+            <div className={styles.logoIcon}>A</div>
+            <span className={styles.logoText}>LMS Admin</span>
           </div>
+        </div>
+
+        <div className={styles.menuSection}>
+          <p className={styles.sectionLabel}>Main Menu</p>
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                isActive ? `${styles.link} ${styles.active}` : styles.link
+              }
+              onClick={handleNavClick}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </div>
+
+        <div className={styles.footerSection}>
+          <NavLink to="/" className={styles.secondaryLink}>
+            <Home size={20} />
+            <span>Public Site</span>
+          </NavLink>
+          <button
+            className={styles.logoutBtn}
+            onClick={() => console.log("Logout")}
+          >
+            <LogOut size={20} />
+            <span>Sign Out</span>
+          </button>
         </div>
       </nav>
 
-      {isMobileView && isMobileMenuOpen && (
-        <div
-          className={styles.overlay}
-          onClick={() => setMobileMenuOpen(false)}
-          tabIndex={-1}
-        />
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div className={styles.overlay} onClick={() => setIsOpen(false)} />
       )}
     </>
   );

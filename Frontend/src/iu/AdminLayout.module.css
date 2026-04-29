@@ -1,33 +1,52 @@
+/* AdminLayout.module.css */
+
 .layout {
   display: flex;
   min-height: 100vh;
+  /* Use a subtle background color to distinguish from the white sidebar */
+  background-color: #f8fafc;
   position: relative;
 }
 
 .content {
   flex: 1;
-  padding: 20px;
-  transition: margin 0.3s ease;
-  margin-left: 250px; 
-  min-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Exactly match the sidebar width we set earlier (260px) */
+  margin-left: 260px;
+  min-height: 100vh;
+}
+
+/* Inner container to prevent content from stretching too far on huge screens */
+.innerContent {
+  padding: 32px;
+  width: 100%;
+  max-width: 1400px; /* Professional standard for readability */
+  margin: 0 auto;
+  flex: 1;
 }
 
 /* Mobile styles */
 @media (max-width: 768px) {
-  .layout {
-    flex-direction: column;
-  }
-
   .content {
     margin-left: 0;
-    padding: 20px 15px;
-    padding-top: 70px; /* Space for mobile menu button */
+    /* Extra padding at top to account for the mobile header we built */
+    padding-top: 60px;
+  }
+
+  .innerContent {
+    padding: 20px 16px;
   }
 }
 
-/* Tablet landscape */
+/* Tablet adjustments */
 @media (min-width: 769px) and (max-width: 1024px) {
   .content {
-    margin-left: 220px; /* Matches tablet sidebar width */
+    margin-left: 260px; /* Keep it consistent or shrink if needed */
+  }
+
+  .innerContent {
+    padding: 24px;
   }
 }
