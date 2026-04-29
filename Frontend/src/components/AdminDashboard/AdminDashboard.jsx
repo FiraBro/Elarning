@@ -1,4 +1,13 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  Users,
+  BookOpen,
+  GraduationCap,
+  DollarSign,
+  Clock,
+  ArrowRight,
+  Loader2,
+} from "lucide-react";
 import { courseService, userService } from "../../service/api";
 import styles from "./AdminDashboard.module.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -14,17 +23,21 @@ export default function AdminDashboard() {
   const [recentCourses, setRecentCourses] = useState([]);
   const [recentUsers, setRecentUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(value);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        setError("");
         const [metrics, users, courses] = await Promise.all([
           courseService.getMetrics(),
-          userService.getAllUsers({ limit: 5 }), // Adjust API to support limit
-          courseService.getAllCourses({ limit: 5, sort: "-createdAt" }),
+          userService.getAllUsers(),
+          courseService.getAllCourses({ limit: 5 }),
         ]);
 
         setStats({
@@ -37,89 +50,131 @@ export default function AdminDashboard() {
         setRecentCourses(courses?.data?.courses ?? []);
         setRecentUsers(Array.isArray(users) ? users.slice(0, 5) : []);
       } catch (err) {
-        setError("Failed to load dashboard data.");
-        toast.error("Failed to load dashboard data.");
-        console.error(err);
+        toast.error("Systems Check: Failed to sync dashboard metrics.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
+  if (loading)
+    return (
+      <div className={styles.loaderContainer}>
+        <Loader2 className={styles.spinner} size={40} />
+        <p>Building your overview...</p>
+      </div>
+    );
+
   return (
     <div className={styles.dashboard}>
-      <ToastContainer position="top-right" autoClose={3000} />
-      <h1>Admin Dashboard</h1>
+      <ToastContainer theme="colored" />
 
-      {loading ? (
-        <p aria-live="polite">Loading data...</p>
-      ) : error ? (
-        <p role="alert" className={styles.error}>
-          {error}
-        </p>
-      ) : (
-        <>
-          <div className={styles.statsGrid}>
-            <StatCard title="Total Users" value={stats.users} icon="👥" />
-            <StatCard title="Courses" value={stats.courses} icon="📚" />
-            <StatCard title="Enrollments" value={stats.enrollments} icon="🎓" />
-            <StatCard title="Revenue" value={`$${stats.revenue}`} icon="💰" />
-          </div>
+      <header className={styles.header}>
+        <div>
+          <h1>Insights Overview</h1>
+          <p>
+            Welcome back, Admin. Here is what's happening with your platform
+            today.
+          </p>
+        </div>
+      </header>
 
-          <div className={styles.sections}>
-            <RecentCourses courses={recentCourses} />
-            <RecentUsers users={recentUsers} />
+      <div className={styles.statsGrid}>
+        <StatCard
+          title="Total Users"
+          value={stats.users.toLocaleString()}
+          icon={<Users />}
+          color="#3b82f6"
+        />
+        <StatCard
+          title="Active Courses"
+          value={stats.courses}
+          icon={<BookOpen />}
+          color="#10b981"
+        />
+        <StatCard
+          title="Total Enrollments"
+          value={stats.enrollments.toLocaleString()}
+          icon={<GraduationCap />}
+          color="#8b5cf6"
+        />
+        <StatCard
+          title="Gross Revenue"
+          value={formatCurrency(stats.revenue)}
+          icon={<DollarSign />}
+          color="#f59e0b"
+        />
+      </div>
+
+      <div className={styles.contentGrid}>
+        <section className={styles.tableSection}>
+          <div className={styles.sectionHead}>
+            <h2>
+              <Clock size={18} /> Recently Published
+            </h2>
+            <button className={styles.viewAll}>
+              View All <ArrowRight size={14} />
+            </button>
           </div>
-        </>
-      )}
+          <div className={styles.listCard}>
+            {recentCourses.map((course) => (
+              <div key={course._id} className={styles.listItem}>
+                <div className={styles.itemInfo}>
+                  <span className={styles.itemTitle}>{course.title}</span>
+                  <span className={styles.itemSubtitle}>
+                    {course.category || "General"}
+                  </span>
+                </div>
+                <span className={styles.itemDate}>
+                  {new Date(course.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.tableSection}>
+          <div className={styles.sectionHead}>
+            <h2>
+              <Users size={18} /> New Registrations
+            </h2>
+            <button className={styles.viewAll}>
+              Manage Users <ArrowRight size={14} />
+            </button>
+          </div>
+          <div className={styles.listCard}>
+            {recentUsers.map((user) => (
+              <div key={user._id} className={styles.listItem}>
+                <div className={styles.itemInfo}>
+                  <span className={styles.itemTitle}>{user.name}</span>
+                  <span className={styles.itemSubtitle}>{user.email}</span>
+                </div>
+                <span
+                  className={`${styles.roleBadge} ${styles[user.role?.toLowerCase()]}`}
+                >
+                  {user.role}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
 
-const StatCard = ({ title, value, icon }) => (
-  <div className={styles.statCard} role="region" aria-label={title}>
-    <div className={styles.statIcon} aria-hidden="true">
+const StatCard = ({ title, value, icon, color }) => (
+  <div className={styles.statCard}>
+    <div
+      className={styles.statIcon}
+      style={{ color: color, backgroundColor: `${color}15` }}
+    >
       {icon}
     </div>
-    <h3>{title}</h3>
-    <p>{value}</p>
+    <div className={styles.statText}>
+      <span className={styles.statTitle}>{title}</span>
+      <span className={styles.statValue}>{value}</span>
+    </div>
   </div>
-);
-
-const RecentCourses = ({ courses }) => (
-  <section className={styles.section} aria-label="Recent Courses">
-    <h2>Recent Courses</h2>
-    <ul className={styles.list}>
-      {courses.length === 0 ? (
-        <li>No recent courses found.</li>
-      ) : (
-        courses.map((course) => (
-          <li key={course._id}>
-            <span>{course.title}</span>
-            <span>{new Date(course.createdAt).toLocaleDateString()}</span>
-          </li>
-        ))
-      )}
-    </ul>
-  </section>
-);
-
-const RecentUsers = ({ users }) => (
-  <section className={styles.section} aria-label="Recent Users">
-    <h2>Recent Users</h2>
-    <ul className={styles.list}>
-      {users.length === 0 ? (
-        <li>No recent users found.</li>
-      ) : (
-        users.map((user) => (
-          <li key={user._id}>
-            <span>{user.name}</span>
-            <span>{user.role}</span>
-          </li>
-        ))
-      )}
-    </ul>
-  </section>
 );
