@@ -1,88 +1,266 @@
-.userContainer {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: #f2f2f2;
+/* UserController.module.css */
+
+.container {
+  padding: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+.header p {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.stats {
+  background: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stats strong {
+  font-size: 1.2rem;
+  color: #3b82f6;
+}
+.stats span {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+/* Action Bar */
+.actionBar {
+  margin-bottom: 1.5rem;
+}
+
+.searchWrapper {
+  position: relative;
+  max-width: 400px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Table Styles */
+.tableCard {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.userTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.userTable th {
+  background: #f8fafc;
+  padding: 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.userTable td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.userTable tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* User Profile Cell */
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatarWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.avatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+}
+
+.userMeta {
+  display: flex;
+  flex-direction: column;
+}
+.userName {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+.userEmail {
+  font-size: 0.8rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Badges */
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.admin {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.instructor {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+.student {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+/* Buttons & Utils */
+.deleteIconButton {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.deleteIconButton:hover {
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+.textRight {
+  text-align: right;
+}
+.dateCell {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.centerBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  color: #64748b;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+  color: #3b82f6;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  
-  .userList {
-    margin-top: 2rem;
-    display: grid;
-    gap: 1rem;
+  to {
+    transform: rotate(360deg);
   }
-  
-  .userCard {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.errorAlert {
+  padding: 1rem;
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+  color: #991b1b;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+.emptyState {
+  padding: 3rem !important;
+  text-align: center;
+  color: #94a3b8;
+}
+
+@media (max-width: 768px) {
+  .userTable thead {
+    display: none;
   }
-  
-  .userInfo {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  
-  .avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  .role {
-    color: #666;
-    font-size: 0.9rem;
-  }
-  
-  .deleteButton {
+  .userTable td {
+    display: block;
+    width: 100%;
+    border: none;
     padding: 0.5rem 1rem;
-    background: transparent;
-    color: #c0392b;
-    border: 1px solid #e74c3c;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s;
   }
-  
-  .deleteButton:hover {
-    color: #c0392b;
+  .userTable tr {
+    border-bottom: 1px solid #e2e8f0;
+    display: block;
+    padding: 1rem 0;
   }
-  
-  .loading {
-    padding: 2rem;
-    text-align: center;
-    color: #666;
+  .textRight {
+    text-align: left;
   }
-  
-  .error {
-    padding: 2rem;
-    text-align: center;
-    color: #e74c3c;
-    background: #ffebee;
-    border-radius: 8px;
-    margin: 2rem 0;
-  }
-  
-  @media (max-width: 768px) {
-    .userCard {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-    
-    .userInfo {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-    
-    .deleteButton {
-      align-self: flex-end;
-    }
-  }
-  
+}
