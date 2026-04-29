@@ -8,15 +8,17 @@ const SignupPage = () => {
 
   const handleSignup = async (credentials) => {
     try {
-      const { data } = await userService.signup(credentials);
-      console.log(data.user);
-      if (data.user.role === "student") {
+      const result = await userService.signup(credentials); // result = { token, data: { user } }
+      const user = result.data.user;
+
+      if (user.role === "student") {
         navigate("/");
-      } else if (data.user.role === "admin") {
+      } else if (user.role === "admin") {
         navigate("/admin/dashboard");
       }
     } catch (error) {
-      alert(error.response?.data?.error || "Signup failed. Please try again.");
+      console.log("Signup error:", error);
+      alert(error.message || "Signup failed. Please try again.");
     }
   };
 

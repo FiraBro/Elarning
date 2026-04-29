@@ -44,7 +44,7 @@ const UserController = () => {
               <div className={styles.userInfo}>
                 {user.photo && (
                   <img
-                    src={`http://localhost:5000/uploads/userImage/${
+                    src={`http://localhost:5005/uploads/userImage/${
                       user.photo
                     }?${new Date().getTime()}`}
                     alt={user.name}

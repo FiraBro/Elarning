@@ -1,9 +1,10 @@
 import axios from "axios";
 
 const IMAGE_BASE_URL =
-import.meta.env.VITE_APP_IMAGE_URL || "http://localhost:5000";
+  import.meta.env.VITE_APP_IMAGE_URL || "http://localhost:5005";
 // Use environment variables for URLs
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5005/api";
 
 const API = axios.create({
   baseURL: API_BASE_URL,
@@ -11,7 +12,6 @@ const API = axios.create({
     "Content-Type": "application/json",
   },
 });
-
 
 // Add request interceptor for auth headers
 API.interceptors.request.use(
@@ -22,7 +22,7 @@ API.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Centralized error handler
@@ -71,7 +71,7 @@ export const courseService = {
         onUploadProgress: (progressEvent) => {
           if (setUploadProgress && typeof setUploadProgress === "function") {
             const progress = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
+              (progressEvent.loaded / progressEvent.total) * 100,
             );
             setUploadProgress(progress);
           }
@@ -198,6 +198,7 @@ export const userService = {
   signup: async (userData) => {
     try {
       const { data } = await API.post("/auth/register", userData);
+      console.log("Signup response:", data); // ← add this
       localStorage.setItem("token", data.token);
       localStorage.setItem("userRole", data.data.user.role);
       localStorage.setItem("userId", data.data.user._id);
