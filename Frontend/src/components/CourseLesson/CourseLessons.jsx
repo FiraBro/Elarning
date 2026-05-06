@@ -5,8 +5,9 @@ import style from "./CourseLessons.module.css";
 import { courseService } from "../../service/api";
 import Navbar from "../Navbar/Navbar";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-export const IMAGE_BASE_URL = import.meta.env.VITE_APP_STATIC_URL || "";
+import { FiChevronLeft, FiPlay, FiCheckCircle, FiLock } from "react-icons/fi";
+
+const IMAGE_BASE_URL = import.meta.env.VITE_APP_STATIC_URL || "";
 
 const CourseLessons = () => {
   const { courseId } = useParams();
@@ -14,139 +15,112 @@ const CourseLessons = () => {
   const [course, setCourse] = useState(null);
   const [currentLesson, setCurrentLesson] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
   useEffect(() => {
     fetchCourseLessons();
-    // eslint-disable-next-line
   }, [courseId]);
 
   const fetchCourseLessons = async () => {
     try {
       setLoading(true);
-      setError(null);
       const { data } = await courseService.getCourseLessons(courseId);
       const courseData = data?.data?.course || data?.course;
-      console.log(courseData.lessons[0].videoUrl);
-      // console.log({Vide:currentLesson.videoUrl});
-
       setCourse(courseData);
-      if (courseData?.lessons && courseData.lessons.length > 0) {
+      if (courseData?.lessons?.length > 0) {
         setCurrentLesson(courseData.lessons[0]);
       }
     } catch (err) {
-      if (err.response?.status === 401) {
-        navigate("/login");
-      } else if (err.response?.status === 403) {
-        setError("You are not enrolled in this course.");
-        toast.error("You are not enrolled in this course.");
-      } else {
-        setError(err.message || "Failed to load course lessons.");
-        toast.error(err.message || "Failed to load course lessons.");
-      }
+      toast.error("Failed to load content");
+      if (err.response?.status === 401) navigate("/login");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLessonSelect = (lesson) => {
-    setCurrentLesson(lesson);
-  };
-
-  if (loading) {
+  if (loading)
     return (
-      <div className={style.loading} aria-live="polite">
+      <div className={style.shimmerWrapper}>
         <Navbar />
-        <p>Loading course...</p>
       </div>
     );
-  }
-
-  if (error) {
-    return (
-      <div className={style.error} aria-live="assertive">
-        <Navbar />
-        <ToastContainer position="top-center" autoClose={3000} />
-        <p>{error}</p>
-      </div>
-    );
-  }
-
-  if (!course) {
-    return (
-      <div className={style.error} aria-live="assertive">
-        <Navbar />
-        <p>Course not found.</p>
-      </div>
-    );
-  }
 
   return (
-    <div className={style.holeCorselessan}>
+    <div className={style.pageWrapper}>
       <Navbar />
-      <ToastContainer position="top-center" autoClose={3000} />
-      <div className={style.courseLessons}>
-        <div className={style.courseHeader}>
-          <h1>{course.title}</h1>
-          <p className={style.description}>{course.description}</p>
-        </div>
+      <ToastContainer theme="dark" />
 
-        <div className={style.contentWrapper}>
-          {/* Video Player (Left) */}
-          <div className={style.videoSection}>
-            {currentLesson ? (
-              <>
-                <h2 className={style.lessonTitle}>{currentLesson.title}</h2>
-                {currentLesson.videoUrl ? (
-                  <ReactPlayer
-                    url={
-                      currentLesson.videoUrl.startsWith("uploads")
-                        ? `${IMAGE_BASE_URL}/${currentLesson.videoUrl}`
-                        : currentLesson.videoUrl
-                    }
-                    controls
-                    playing
-                    muted // Allow auto-play
-                    width="100%"
-                    height="100%"
-                    className={style.videoPlayer}
-                    onError={() => toast.error("Failed to load video.")}
-                  />
-                ) : (
-                  <p>No video available for this lesson.</p>
-                )}
-              </>
-            ) : (
-              <p>No lessons available.</p>
-            )}
-          </div>
-
-          {/* Lesson List (Right) */}
-          <div className={style.lessonList}>
-            <h2>Course Content</h2>
-            {!course.lessons || course.lessons.length === 0 ? (
-              <p>No lessons available.</p>
-            ) : (
-              <ul className={style.lessonItems}>
-                {course.lessons.map((lesson, idx) => (
-                  <li
-                    key={lesson._id || idx}
-                    className={`${style.lessonItem} ${
-                      currentLesson?._id === lesson._id ? style.active : ""
-                    }`}
-                    onClick={() => handleLessonSelect(lesson)}
-                    tabIndex={0}
-                    aria-current={
-                      currentLesson?._id === lesson._id ? "true" : undefined
-                    }
-                  >
-                    <span className={style.lessonNumber}>{idx + 1}.</span>
-                    <span className={style.lessonTitle}>{lesson.title}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+      {/* Top Navigation Bar */}
+      <div className={style.topBar}>
+        <button onClick={() => navigate(-1)} className={style.backBtn}>
+          <FiChevronLeft /> Back to Course
+        </button>
+        <div className={style.courseProgressInfo}>
+          <span>{course?.title}</span>
+          <div className={style.miniProgress}>
+            <div className={style.miniFill} style={{ width: "20%" }}></div>
           </div>
         </div>
+      </div>
+
+      <div className={style.theaterLayout}>
+        {/* Main Video Section */}
+        <section className={style.playerContainer}>
+          <div className={style.videoWrapper}>
+            <ReactPlayer
+              url={
+                currentLesson?.videoUrl?.startsWith("uploads")
+                  ? `${IMAGE_BASE_URL}/${currentLesson.videoUrl}`
+                  : currentLesson?.videoUrl
+              }
+              controls
+              width="100%"
+              height="100%"
+              playing
+              className={style.reactPlayer}
+              config={{ file: { attributes: { controlsList: "nodownload" } } }}
+            />
+          </div>
+
+          <div className={style.lessonDescriptionSection}>
+            <div className={style.titleRow}>
+              <h2>{currentLesson?.title}</h2>
+              <button className={style.completeBtn}>Mark as Complete</button>
+            </div>
+            <p>{course?.description}</p>
+          </div>
+        </section>
+
+        {/* Curriculum Sidebar */}
+        <aside className={style.sidebar}>
+          <div className={style.sidebarHeader}>
+            <h3>Course Content</h3>
+            <span>{course?.lessons?.length} Lessons</span>
+          </div>
+
+          <div className={style.curriculumList}>
+            {course?.lessons.map((lesson, idx) => (
+              <div
+                key={lesson._id}
+                className={`${style.lessonCard} ${
+                  currentLesson?._id === lesson._id ? style.activeCard : ""
+                }`}
+                onClick={() => setCurrentLesson(lesson)}
+              >
+                <div className={style.lessonStatus}>
+                  {currentLesson?._id === lesson._id ? (
+                    <FiPlay className={style.playIcon} />
+                  ) : (
+                    <FiCheckCircle className={style.checkIcon} />
+                  )}
+                </div>
+                <div className={style.lessonInfo}>
+                  <span className={style.lessonIndex}>Lesson {idx + 1}</span>
+                  <p className={style.lessonName}>{lesson.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
       </div>
     </div>
   );

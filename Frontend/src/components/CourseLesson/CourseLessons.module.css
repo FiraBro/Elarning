@@ -1,233 +1,154 @@
-.courseLessons {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
-  color: #000;
-  box-sizing: border-box;
+/* CourseLessons.module.css */
+.pageWrapper {
+  background-color: #0b0e14; /* Pure dark theme */
+  min-height: 100vh;
+  color: #fff;
 }
 
-.courseHeader {
-  margin-bottom: 2rem;
-}
-
-.courseHeader h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  word-break: break-word;
-}
-
-.description {
-  font-size: 1.1rem;
-  color: #555;
-  word-break: break-word;
-}
-
-.contentWrapper {
+.topBar {
   display: flex;
-  gap: 1rem;
-  min-height: 70vh;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+  justify-content: space-between;
 }
 
-.videoSection {
-  flex: 2;
-  padding: 1rem 1rem 6rem 1rem;
+.backBtn {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.backBtn:hover {
+  color: #fff;
+}
+
+/* Theater Layout */
+.theaterLayout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  height: calc(100vh - 130px);
+}
+
+.playerContainer {
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: #0b0e14;
+}
+
+.videoWrapper {
   width: 100%;
-  max-width: 800px;
-  height: 450px;
+  aspect-ratio: 16/9;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.lessonDescriptionSection {
+  margin-top: 2rem;
+  padding: 0 1rem;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.completeBtn {
+  background: #238636;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Sidebar Styling */
+.sidebar {
+  background: #161b22;
+  border-left: 1px solid #30363d;
   display: flex;
   flex-direction: column;
 }
 
-.videoSection .lessonTitle {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+.sidebarHeader {
+  padding: 1.5rem;
+  border-bottom: 1px solid #30363d;
 }
 
-.videoPlayer {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background: #000;
+.sidebarHeader h3 {
+  font-size: 1.1rem;
+}
+.sidebarHeader span {
+  color: #8b949e;
+  font-size: 0.8rem;
 }
 
-.lessonList {
-  flex: 1;
-  background: #f9f9f9;
-  padding: 1rem;
-  border-radius: 8px;
-  position: sticky;
-  top: 2rem;
-  max-height: 80vh;
+.curriculumList {
   overflow-y: auto;
-  min-width: 220px;
-  box-sizing: border-box;
+  flex: 1;
 }
 
-.lessonList h2 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
+.lessonCard {
+  display: flex;
+  padding: 1rem 1.5rem;
+  gap: 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #21262d;
+  transition: 0.2s;
 }
 
-.lessonItems {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.lessonCard:hover {
+  background: #1c2128;
 }
 
-.lessonItem {
+.activeCard {
+  background: #1c2128;
+  border-left: 4px solid #58a6ff;
+}
+
+.lessonStatus {
   display: flex;
   align-items: center;
-  padding: 0.75rem;
-  margin-bottom: 0.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  background: transparent;
-  outline: none;
 }
 
-.lessonItem:hover,
-.lessonItem:focus {
-  background-color: #e0e0e0;
+.playIcon {
+  color: #58a6ff;
+}
+.checkIcon {
+  color: #30363d;
 }
 
-.lessonItem.active {
-  background-color: #007bff;
-  color: white;
+.lessonIndex {
+  font-size: 0.7rem;
+  color: #8b949e;
+  text-transform: uppercase;
 }
 
-.lessonNumber {
-  margin-right: 0.5rem;
-  font-weight: bold;
+.lessonName {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-top: 2px;
 }
 
-.lessonTitle {
-  flex: 1;
-  word-break: break-word;
-}
-
-.loading {
-  text-align: center;
-  font-size: 1.2rem;
-  padding: 2rem;
-}
-
-.error {
-  text-align: center;
-  color: red;
-  font-size: 1.2rem;
-  padding: 2rem;
-}
-
-@media (max-width: 1100px) {
-  .courseLessons {
-    padding: 1rem;
+/* Responsive */
+@media (max-width: 1024px) {
+  .theaterLayout {
+    grid-template-columns: 1fr;
+    height: auto;
   }
-  .contentWrapper {
-    gap: 0.5rem;
-  }
-  .videoSection {
-    max-width: 100%;
-    height: 350px;
-    padding: 0.5rem 0.5rem 3rem 0.5rem;
-  }
-}
-
-@media (max-width: 900px) {
-  .contentWrapper {
-    flex-direction: column;
-    min-height: unset;
-  }
-  .videoSection {
-    height: 250px;
-    padding-bottom: 1rem;
-  }
-  .lessonList {
-    position: static;
-    max-height: none;
-    min-width: 0;
-    margin-top: 1rem;
-    padding: 0.8rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .courseLessons {
-    padding: 0.5rem;
-  }
-  .courseHeader h1 {
-    font-size: 1.3rem;
-  }
-  .videoSection {
-    height: 180px;
-    padding: 0.2rem 0.2rem 0.8rem 0.2rem;
-  }
-  .lessonList {
-    padding: 0.5rem;
-    border-radius: 6px;
-  }
-  .lessonItem {
-    padding: 0.5rem;
-    font-size: 0.98rem;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .courseLessons {
-    color: #e6e6e6;
-  }
-  .courseHeader h1 {
-    color: #e0e7ef;
-  }
-  .description {
-    color: #b6bbc4;
-  }
-  .videoSection {
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  }
-  .videoSection .lessonTitle {
-    color: #e0e7ef;
-  }
-  .videoPlayer {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-    background: #181818;
-  }
-  .lessonList {
-    background: #23272b;
-    border-radius: 8px;
-    color: #e6e6e6;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  }
-  .lessonList h2 {
-    color: #e0e7ef;
-  }
-  .lessonItem {
-    background: transparent;
-    color: #e6e6e6;
-  }
-  .lessonItem:hover,
-  .lessonItem:focus {
-    background-color: #222d3b;
-  }
-  .lessonItem.active {
-    background-color: #2563eb;
-    color: #fff;
-  }
-  .lessonNumber {
-    color: #90cdf4;
-  }
-  .lessonTitle {
-    color: #e6e6e6;
-  }
-  .loading {
-    color: #b6bbc4;
-  }
-  .error {
-    color: #f87171;
-    background: #2c1a1a;
-    border-radius: 8px;
+  .sidebar {
+    border-left: none;
+    border-top: 1px solid #30363d;
   }
 }
