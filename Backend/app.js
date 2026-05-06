@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
+// const rateLimit = require("express-rate-limit");
 const compression = require("compression");
 const morgan = require("morgan");
 
@@ -12,7 +12,7 @@ const courseRoutes = require("./routes/courseRoutes");
 const userRoutes = require("./routes/userRoutes");
 const globalErrorHandler = require("./controllers/errorController");
 const reviewRoutes = require("./routes/reviewRoutes");
-const AppError = require("./utils/appError");
+// const AppError = require("./utils/appError");
 const subscriberRoutes = require("./routes/subscriptionRoutes");
 
 const app = express();
@@ -31,12 +31,12 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Rate limiter (apply globally or per-route as needed)
-const limiter = rateLimit({
-  max: 100, // limit each IP
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  message: "Too many requests from this IP, please try again later.",
-});
-app.use("/api", limiter);
+// const limiter = rateLimit({
+//   max: 100, // limit each IP
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   message: "Too many requests from this IP, please try again later.",
+// });
+// app.use("/api", limiter);
 
 // Body parser
 app.use(express.json({ limit: "50mb" }));
@@ -58,7 +58,7 @@ app.use(
 app.use("/uploads", (req, res, next) => {
   res.header(
     "Access-Control-Allow-Origin",
-    process.env.FRONTEND_URL || "http://localhost:5174",
+    process.env.FRONTEND_URL || "http://localhost:5173",
   );
   res.header("Access-Control-Allow-Credentials", "true");
   next();
@@ -74,8 +74,13 @@ app.use(
 );
 
 // Routes
-app.use("/api/reviews", reviewRoutes);
+app.use((req, res, next) => {
+  console.log(`Incoming: ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 app.use("/api/auth", authRoutes);
+app.use("/api/reviews", reviewRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/newsletter", subscriberRoutes);
