@@ -261,6 +261,7 @@ const CourseController = () => {
                 <span>Upload Lesson Videos</span>
                 <input
                   type="file"
+                  name="lessonVideos"
                   multiple
                   accept="video/*"
                   onChange={handleFileChange}
