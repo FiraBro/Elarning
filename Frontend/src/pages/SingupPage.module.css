@@ -1,30 +1,298 @@
+/* ── Fonts ──────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap");
 
-.signupPage {
-  max-width: 500px;
-  margin: 50px auto;
-  padding: 20px;
-  text-align: center;
-  background-color: #1f2937; /* Dark background */
-  color: #000; /* Light text */
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+/* ── Design tokens (matches LoginPage) ─────────────────── */
+:root {
+  --bg: #080c14;
+  --surface: #0f172a;
+  --surface-2: #1a2540;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-mid: rgba(255, 255, 255, 0.12);
+
+  --indigo: #6366f1;
+  --indigo-dim: #4f46e5;
+  --teal: #2dd4bf;
+
+  --text-1: #f1f5f9;
+  --text-2: #94a3b8;
+  --text-3: #475569;
+
+  --radius-md: 10px;
+  --radius-lg: 16px;
 }
 
-.signupPage h1 {
-  color: #f9fafb; /* Heading text color */
-  margin-bottom: 20px;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PAGE SHELL
+   ══════════════════════════════════════════════════════════ */
+.pageRoot {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg);
+  font-family: "DM Sans", sans-serif;
+}
+
+/* ── Left branding panel ─────────────────────────────────── */
+.brandPanel {
+  flex: 1 1 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  background: linear-gradient(155deg, #0d1930 0%, #0a1628 50%, #07101f 100%);
+  border-right: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.brandPanel::before,
+.brandPanel::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Teal glow top-right */
+.brandPanel::before {
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(
+    circle,
+    rgba(45, 212, 191, 0.1) 0%,
+    transparent 70%
+  );
+  top: -100px;
+  right: -110px;
+}
+
+/* Indigo glow bottom-left */
+.brandPanel::after {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.1) 0%,
+    transparent 70%
+  );
+  bottom: -60px;
+  left: -70px;
+}
+
+.brandInner {
+  position: relative;
+  z-index: 1;
+  max-width: 380px;
+  width: 100%;
+}
+
+/* Logo */
+.logoMark {
+  margin-bottom: 2.5rem;
+}
+
+.logoIcon {
+  font-size: 1.9rem;
+  background: linear-gradient(135deg, var(--teal), var(--indigo));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Brand heading */
+.brandHeading {
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  font-weight: 400;
+  color: var(--text-1);
+  line-height: 1.2;
+  margin-bottom: 2.25rem;
+}
+
+.brandHeading em {
+  font-style: italic;
+  background: linear-gradient(90deg, var(--teal), var(--indigo));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Perk list */
+.perks {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 2.75rem;
+}
+
+.perks li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+
+.perkIcon {
+  color: var(--teal);
+  font-size: 0.65rem;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+/* Avatar row */
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.avatarStack {
+  display: flex;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 2px solid var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--text-2);
+  margin-left: -8px;
+  flex-shrink: 0;
+}
+
+.avatar:first-child {
+  margin-left: 0;
+}
+
+.avatarCaption {
+  font-size: 0.78rem;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+
+/* ── Right form panel ────────────────────────────────────── */
+.formPanel {
+  flex: 1 1 55%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  background-color: var(--bg);
+}
+
+.formCard {
+  width: 100%;
+  max-width: 440px;
+}
+
+/* Mobile-only logo */
+.mobileLogo {
+  display: none;
+  margin-bottom: 2rem;
+}
+
+/* Form header */
+.formHeader {
+  margin-bottom: 2rem;
+}
+
+.heading {
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(1.75rem, 4vw, 2.2rem);
+  font-weight: 400;
+  color: var(--text-1);
+  line-height: 1.15;
+  margin-bottom: 0.45rem;
+}
+
+.subheading {
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+
+/* Login prompt */
+.loginPrompt {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.875rem;
+  color: var(--text-2);
+  text-align: center;
 }
 
 .loginLink {
-  margin-top: 20px;
-  color: #cbd5e1; /* Soft light gray */
-}
-
-.loginLink a {
-  color: #4caf50; /* Keep accent green for links */
+  color: var(--teal);
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
 }
 
-.loginLink a:hover {
-  text-decoration: underline;
+.loginLink:hover {
+  color: var(--indigo);
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .pageRoot {
+    flex-direction: column;
+  }
+
+  .brandPanel {
+    display: none;
+  }
+
+  .formPanel {
+    flex: 1;
+    align-items: flex-start;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  .formCard {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .mobileLogo {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .formPanel {
+    padding: 2rem 1.25rem 3rem;
+  }
+
+  .formCard {
+    max-width: 100%;
+  }
+
+  .heading {
+    font-size: 1.65rem;
+  }
+}
+
+/* ── Toastify overrides ──────────────────────────────────── */
+:global(.Toastify__toast) {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.875rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-mid);
 }
