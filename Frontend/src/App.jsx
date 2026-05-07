@@ -1,104 +1,97 @@
-import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import React, { lazy, Suspense } from "react";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 
-import HomePage from "./pages/HomePage";
-import MycoursePage from "./pages/MycoursePage";
-import CourseController from "./components/CourseController/CourseController";
-import InstructorPage from "./pages/InstructorPage";
-import SingupPage from "./pages/SingupPage";
-import LoginPage from "./pages/LoginPage";
-import Profile from "./components/Profile/Profile";
-import UserControl from "./components/UserController/UserController";
-import CourseLessons from "./components/CourseLesson/CourseLessons";
-import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
-import CourseDetailPage from "./pages/CourseDetailPage";
-
+// Layouts & Guards
 import PrivateRoute from "./components/PrivetRoute";
 import AdminRoute from "./components/AdminRoute";
 import AdminLayout from "./iu/AdminLayout";
-import ForgotPasswordPage from "./components/ForgotPassword/ForgotPasswordPage ";
-import ResetPasswordPage from "./components/ForgotPassword/ResetPasswordPage";
+import MainLayout from "./iu/MainLayout";
+// Professional Loading Component
+const PageLoader = () => (
+  <div className="loader-container">
+    <div className="spinner"></div>
+  </div>
+);
+
+// Lazy Loading Pages (Improves Initial Load Speed)
+const HomePage = lazy(() => import("./pages/HomePage"));
+const MycoursePage = lazy(() => import("./pages/MycoursePage"));
+const CourseDetailPage = lazy(() => import("./pages/CourseDetailPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const SingupPage = lazy(() => import("./pages/SingupPage"));
+const Profile = lazy(() => import("./components/Profile/Profile"));
+const AdminDashboard = lazy(
+  () => import("./components/AdminDashboard/AdminDashboard"),
+);
+const CourseController = lazy(
+  () => import("./components/CourseController/CourseController"),
+);
+const UserControl = lazy(
+  () => import("./components/UserController/UserController"),
+);
+const ForgotPasswordPage = lazy(
+  () => import("./components/ForgotPassword/ForgotPasswordPage "),
+);
+const ResetPasswordPage = lazy(
+  () => import("./components/ForgotPassword/ResetPasswordPage"),
+);
+const CourseLessons = lazy(
+  () => import("./components/CourseLesson/CourseLessons"),
+);
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />, // Wrap everything in a MainLayout (Navbar/Footer)
+    children: [
+      // --- Public Routes ---
+      { index: true, element: <HomePage /> },
+      { path: "login", element: <LoginPage /> },
+      { path: "signup", element: <SingupPage /> },
+      { path: "forgot-password", element: <ForgotPasswordPage /> },
+      { path: "reset-password/:token", element: <ResetPasswordPage /> },
+
+      // --- Protected Student/User Routes ---
+      {
+        element: <PrivateRoute />,
+        children: [
+          { path: "profile", element: <Profile /> },
+          { path: "mycourse", element: <MycoursePage /> },
+          { path: "courses/:id", element: <CourseDetailPage /> },
+          { path: "courses/:courseId/lessons", element: <CourseLessons /> },
+        ],
+      },
+
+      // --- Admin Specific Routes ---
+      {
+        path: "admin",
+        element: <AdminRoute />,
+        children: [
+          {
+            element: <AdminLayout />,
+            children: [
+              { index: true, element: <Navigate to="dashboard" replace /> },
+              { path: "dashboard", element: <AdminDashboard /> },
+              { path: "courses", element: <CourseController /> },
+              { path: "users", element: <UserControl /> },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  // --- Global 404 ---
+  { path: "*", element: <div className="error-404">404 - Page Not Found</div> },
+]);
 
 export default function App() {
-  const router = createBrowserRouter([
-    // Public routes
-    {
-      path: "login",
-      element: <LoginPage />,
-    },
-    {
-      path: "signup",
-      element: <SingupPage />,
-    },
-    {
-      path: "/",
-      element: <HomePage />,
-    },
-    {
-      path: "/forgot-password",
-      element: <ForgotPasswordPage />,
-    },
-    {
-      path: "/reset-password/:token",
-      element: <ResetPasswordPage />,
-    },
-    // Routes requiring authentication
-    {
-      element: <PrivateRoute />, // Protect all children routes
-      children: [
-        {
-          path: "mycourse",
-          element: <MycoursePage />,
-        },
-        {
-          path: "courses/:courseId/lessons",
-          element: <CourseLessons />,
-        },
-        {
-          path: "profile",
-          element: <Profile />,
-        },
-        {
-          path: "courses/:id",
-          element: <CourseDetailPage />,
-        },
-        {
-          path: "instructor",
-          element: <InstructorPage />,
-        },
-
-        // Admin-only routes wrapped in AdminRoute and AdminLayout
-        {
-          element: <AdminRoute />, // Admin guard
-          children: [
-            {
-              element: <AdminLayout />, // Admin layout with sidebar
-              children: [
-                {
-                  path: "admin/dashboard",
-                  element: <AdminDashboard />,
-                },
-                {
-                  path: "admin/courses",
-                  element: <CourseController />,
-                },
-                {
-                  path: "admin/users",
-                  element: <UserControl />,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-
-    // Fallback route (optional)
-    {
-      path: "*",
-      element: <div>404 Not Found</div>,
-    },
-  ]);
-
-  return <RouterProvider router={router} />;
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
 }

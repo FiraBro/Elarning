@@ -1,0 +1,41 @@
+.layoutWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensures the layout takes at least the full screen height */
+  background-color: #0f172a; /* Matches your dark theme */
+}
+
+.contentGrow {
+  flex: 1; /* This is the magic: it pushes the footer down by taking up all available space */
+  width: 100%;
+  margin: 0 auto;
+
+  /* 
+     IMPORTANT: Add top padding equal to your Navbar height 
+     so the sticky navbar doesn't cover your Hero section 
+  */
+  padding-top: 80px;
+}
+
+/* Optional: Smooth fade-in for page transitions */
+.contentGrow {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .contentGrow {
+    padding-top: 70px; /* Adjust based on your mobile navbar height */
+  }
+}
