@@ -1,29 +1,297 @@
-.loginPage {
-  max-width: 500px;
-  margin: 50px auto;
-  padding: 20px;
-  text-align: center;
-  background-color: #1f2937; /* Dark background */
-  color: #000; /* Light text */
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+/* ── Fonts ──────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap");
+
+/* ── Design tokens ──────────────────────────────────────── */
+:root {
+  --bg: #080c14;
+  --surface: #0f172a;
+  --surface-2: #1a2540;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-mid: rgba(255, 255, 255, 0.12);
+
+  --indigo: #6366f1;
+  --indigo-dim: #4f46e5;
+  --teal: #2dd4bf;
+  --amber: #f59e0b;
+
+  --text-1: #f1f5f9;
+  --text-2: #94a3b8;
+  --text-3: #475569;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
 }
 
-.loginPage h1 {
-  color: #f9fafb; /* Heading text color */
-  margin-bottom: 20px;
+/* ── Reset ──────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PAGE SHELL  —  split layout
+   ══════════════════════════════════════════════════════════ */
+.pageRoot {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg);
+  font-family: "DM Sans", sans-serif;
+}
+
+/* ── Left branding panel ─────────────────────────────────── */
+.brandPanel {
+  flex: 1 1 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  background: linear-gradient(155deg, #0d1930 0%, #0a1628 50%, #07101f 100%);
+  border-right: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle mesh circles for depth */
+.brandPanel::before,
+.brandPanel::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.brandPanel::before {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.12) 0%,
+    transparent 70%
+  );
+  top: -80px;
+  right: -120px;
+}
+
+.brandPanel::after {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(
+    circle,
+    rgba(45, 212, 191, 0.08) 0%,
+    transparent 70%
+  );
+  bottom: -60px;
+  left: -80px;
+}
+
+.brandInner {
+  position: relative;
+  z-index: 1;
+  max-width: 380px;
+  width: 100%;
+}
+
+/* Logo mark */
+.logoMark {
+  margin-bottom: 3rem;
+}
+
+.logoIcon {
+  font-size: 2rem;
+  background: linear-gradient(135deg, var(--indigo), var(--teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Quote */
+.tagline {
+  margin-bottom: 3.5rem;
+}
+
+.tagline p {
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-style: italic;
+  color: var(--text-1);
+  line-height: 1.45;
+  margin-bottom: 1rem;
+}
+
+.tagline cite {
+  font-size: 0.82rem;
+  font-style: normal;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+}
+
+/* Stats row */
+.brandStats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statNum {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text-1);
+  letter-spacing: -0.02em;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.statDivider {
+  width: 1px;
+  height: 36px;
+  background: var(--border-mid);
+  flex-shrink: 0;
+}
+
+/* ── Right form panel ────────────────────────────────────── */
+.formPanel {
+  flex: 1 1 55%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  background-color: var(--bg);
+}
+
+.formCard {
+  width: 100%;
+  max-width: 440px;
+}
+
+/* Mobile-only logo (hidden on desktop) */
+.mobileLogo {
+  display: none;
+  margin-bottom: 2rem;
+}
+
+/* Form header */
+.formHeader {
+  margin-bottom: 2rem;
+}
+
+.heading {
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 400;
+  color: var(--text-1);
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+}
+
+.subheading {
+  font-size: 0.9rem;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+/* Forgot password row */
+.forgotRow {
+  margin-top: 0.85rem;
+  text-align: right;
+}
+
+.forgotLink {
+  font-size: 0.83rem;
+  color: var(--indigo);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.forgotLink:hover {
+  color: var(--teal);
+}
+
+/* Sign-up prompt */
+.signupPrompt {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.875rem;
+  color: var(--text-2);
+  text-align: center;
 }
 
 .signupLink {
-  margin-top: 20px;
-  color: #cbd5e1; /* Light muted text */
-}
-
-.signupLink a {
-  color: #4caf50; /* Accent green */
+  color: var(--teal);
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
 }
 
-.signupLink a:hover {
-  text-decoration: underline;
+.signupLink:hover {
+  color: var(--indigo);
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════ */
+
+/* Tablet — collapse brand panel */
+@media (max-width: 900px) {
+  .pageRoot {
+    flex-direction: column;
+  }
+
+  .brandPanel {
+    display: none;
+  }
+
+  .formPanel {
+    flex: 1;
+    align-items: flex-start;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  .formCard {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .mobileLogo {
+    display: block;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .formPanel {
+    padding: 2rem 1.25rem 3rem;
+  }
+
+  .formCard {
+    max-width: 100%;
+  }
+
+  .heading {
+    font-size: 1.65rem;
+  }
+}
+
+/* ── Toastify theme overrides ────────────────────────────── */
+:global(.Toastify__toast) {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-mid);
 }
