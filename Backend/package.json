@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
     "morgan": "^1.10.1",
     "multer": "^2.1.1",
     "nodemailer": "^8.0.7",
+    "nodemon": "^3.1.14",
     "sharp": "^0.34.5",
     "validator": "^13.15.35"
   }

@@ -1,0 +1,43 @@
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:5005 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:5005...
+* Connected to localhost (::1) port 5005
+> POST /api/auth/register HTTP/1.1
+> Host: localhost:5005
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 107
+> 
+} [107 bytes data]
+< HTTP/1.1 500 Internal Server Error
+< Content-Security-Policy: default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests
+< Cross-Origin-Opener-Policy: same-origin
+< Cross-Origin-Resource-Policy: cross-origin
+< Origin-Agent-Cluster: ?1
+< Referrer-Policy: no-referrer
+< Strict-Transport-Security: max-age=31536000; includeSubDomains
+< X-Content-Type-Options: nosniff
+< X-DNS-Prefetch-Control: off
+< X-Download-Options: noopen
+< X-Frame-Options: SAMEORIGIN
+< X-Permitted-Cross-Domain-Policies: none
+< X-XSS-Protection: 0
+< Access-Control-Allow-Origin: http://localhost:5173
+< Vary: Origin, Accept-Encoding
+< Access-Control-Allow-Credentials: true
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 53
+< ETag: W/"35-yLjDmWceBAus3aWiRPO5Z7nZrWo"
+< Date: Wed, 29 Apr 2026 09:19:39 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+{ [53 bytes data]
+100   160  100    53  100   107     82    166 --:--:-- --:--:-- --:--:--   248100   160  100    53  100   107     82    166 --:--:-- --:--:-- --:--:--   248
+* Connection #0 to host localhost left intact
+{"status":"error","message":"next is not a function"}

@@ -1,0 +1,18 @@
+◇ injected env (3) from .env // tip: ⌘ suppress logs { quiet: true }
+🚀 Server running on port 5005
+✅ MongoDB connected
+Incoming: POST /api/auth/register
+Error sending welcome email: Error: Missing credentials for "PLAIN"
+    at SMTPConnection._formatError (/home/firagos/Desktop/el/Elarning/Backend/node_modules/nodemailer/lib/smtp-connection/index.js:887:19)
+    at SMTPConnection.login (/home/firagos/Desktop/el/Elarning/Backend/node_modules/nodemailer/lib/smtp-connection/index.js:524:38)
+    at /home/firagos/Desktop/el/Elarning/Backend/node_modules/nodemailer/lib/smtp-transport/index.js:261:32
+    at SMTPConnection.<anonymous> (/home/firagos/Desktop/el/Elarning/Backend/node_modules/nodemailer/lib/smtp-connection/index.js:248:17)
+    at Object.onceWrapper (node:events:633:28)
+    at SMTPConnection.emit (node:events:519:28)
+    at SMTPConnection._actionEHLO (/home/firagos/Desktop/el/Elarning/Backend/node_modules/nodemailer/lib/smtp-connection/index.js:1479:14)
+    at SMTPConnection._processResponse (/home/firagos/Desktop/el/Elarning/Backend/node_modules/nodemailer/lib/smtp-connection/index.js:1072:20)
+    at SMTPConnection._onData (/home/firagos/Desktop/el/Elarning/Backend/node_modules/nodemailer/lib/smtp-connection/index.js:847:14)
+    at SMTPConnection._onSocketData (/home/firagos/Desktop/el/Elarning/Backend/node_modules/nodemailer/lib/smtp-connection/index.js:217:44) {
+  code: 'EAUTH',
+  command: 'API'
+}

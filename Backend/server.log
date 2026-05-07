@@ -1,0 +1,7 @@
+◇ injected env (4) from .env // tip: ⌘ enable debugging { debug: true }
+🚀 Server running on port 5000
+✅ MongoDB connected
+👋 SIGTERM RECEIVED. Shutting down gracefully...
+💥 Process terminated
+👋 SIGTERM RECEIVED. Shutting down gracefully...
+💥 Process terminated

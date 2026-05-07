@@ -11,6 +11,7 @@ import {
   FiSearch,
   FiLayers,
   FiClock,
+  FiTrendingUp,
 } from "react-icons/fi";
 
 export default function CourseList() {
@@ -21,10 +22,13 @@ export default function CourseList() {
   const [page, setPage] = useState(1);
   const [limit] = useState(6);
   const [totalPages, setTotalPages] = useState(1);
-  const [sort, setSort] = useState("createdAt");
+
+  // FIXED: Default sort to '-createdAt' so newest courses appear first
+  const [sort, setSort] = useState("-createdAt");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
+  // Debounce search to prevent excessive API calls
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search.trim());
@@ -41,8 +45,12 @@ export default function CourseList() {
       if (debouncedSearch !== "") params.search = debouncedSearch;
 
       const { data } = await courseService.getAllCourses(params);
-      setCourses(data.courses || []);
-      setTotalPages(data.totalPages || 1);
+      // Adjusting based on common API response structures
+      const fetchedCourses = data.courses || data.data?.courses || [];
+      const total = data.totalPages || data.data?.totalPages || 1;
+
+      setCourses(fetchedCourses);
+      setTotalPages(total);
     } catch (error) {
       setError("Failed to load courses. Please try again.");
     } finally {
@@ -76,19 +84,22 @@ export default function CourseList() {
           animate={{ opacity: 1, y: 0 }}
           className={styles.headerContent}
         >
-          <span className={styles.subTag}>Explore Knowledge</span>
+          <span className={styles.subTag}>
+            <FiTrendingUp /> Skyrocket Your Career
+          </span>
           <h1>
             Advance Your Skills With{" "}
             <span className={styles.gradientText}>Expert Courses</span>
           </h1>
         </motion.div>
 
+        {/* RESPONSIVE FILTER BAR */}
         <div className={styles.filterBar}>
           <div className={styles.searchWrapper}>
             <FiSearch className={styles.searchIcon} />
             <input
               type="text"
-              placeholder="What do you want to learn today?"
+              placeholder="Search for titles, skills, or mentors..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className={styles.searchInput}
@@ -103,7 +114,8 @@ export default function CourseList() {
             }}
             className={styles.sortSelect}
           >
-            <option value="createdAt">Latest Releases</option>
+            <option value="-createdAt">Latest Releases</option>
+            <option value="createdAt">Oldest Courses</option>
             <option value="price">Price: Low to High</option>
             <option value="-price">Price: High to Low</option>
             <option value="title">Alphabetical (A-Z)</option>
@@ -118,6 +130,10 @@ export default function CourseList() {
           </div>
         ) : error ? (
           <div className={styles.errorState}>{error}</div>
+        ) : courses.length === 0 ? (
+          <div className={styles.emptyState}>
+            No courses found matching your criteria.
+          </div>
         ) : (
           <>
             <motion.div layout className={styles.courseGrid}>
@@ -138,15 +154,17 @@ export default function CourseList() {
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
+                  className={styles.pageBtn}
                 >
                   <FiChevronLeft /> Previous
                 </button>
                 <div className={styles.pageIndicator}>
-                  {page} / {totalPages}
+                  Page <span>{page}</span> of {totalPages}
                 </div>
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
+                  className={styles.pageBtn}
                 >
                   Next <FiChevronRight />
                 </button>
@@ -159,7 +177,6 @@ export default function CourseList() {
   );
 }
 
-// Sub-component for better organization
 function CourseCard({ course, onEnroll, isEnrolling }) {
   const { _id, title, description, banner, price } = course;
 
@@ -169,6 +186,7 @@ function CourseCard({ course, onEnroll, isEnrolling }) {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
+      whileHover={{ y: -8 }}
       className={styles.courseCard}
     >
       <div className={styles.imageContainer}>
@@ -207,7 +225,7 @@ function CourseCard({ course, onEnroll, isEnrolling }) {
               disabled={isEnrolling}
               className={styles.btnPrimary}
             >
-              {isEnrolling ? "..." : "Enroll"}
+              {isEnrolling ? "..." : "Enroll Now"}
             </button>
           </div>
         </div>
