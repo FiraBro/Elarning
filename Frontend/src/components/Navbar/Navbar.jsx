@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import styles from "./Navbar.module.css";
@@ -8,209 +8,148 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
   const mobileMenuRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Sync auth state with localStorage and across tabs
   const syncAuthState = () => {
     const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
     setIsLoggedIn(!!token);
-
-    let role = localStorage.getItem("userRole");
-    if (!token || !role || role === "null") {
-      role = null;
-    }
-    setUserRole(role);
+    setUserRole(token && role !== "null" ? role : null);
   };
 
   useEffect(() => {
     syncAuthState();
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
     window.addEventListener("storage", syncAuthState);
-    return () => window.removeEventListener("storage", syncAuthState);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("storage", syncAuthState);
+    };
   }, []);
 
-  // Accessibility: Focus trap and Escape key
+  // Close mobile menu on route change
   useEffect(() => {
-    if (!isMobileMenuOpen) return;
-
-    const focusableEls = mobileMenuRef.current
-      ? mobileMenuRef.current.querySelectorAll(
-          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        )
-      : [];
-    const firstEl = focusableEls[0];
-    const lastEl = focusableEls[focusableEls.length - 1];
-
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        setIsMobileMenuOpen(false);
-      }
-      if (e.key === "Tab" && focusableEls.length) {
-        // Focus trap
-        if (e.shiftKey && document.activeElement === firstEl) {
-          e.preventDefault();
-          lastEl.focus();
-        } else if (!e.shiftKey && document.activeElement === lastEl) {
-          e.preventDefault();
-          firstEl.focus();
-        }
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    // Focus the first element when menu opens
-    firstEl && firstEl.focus();
-
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isMobileMenuOpen]);
-
-  // Lock body scroll when menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMobileMenuOpen]);
+    setIsMobileMenuOpen(false);
+  }, [location]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userId");
-    setIsLoggedIn(false);
-    setUserRole(null);
-    setIsMobileMenuOpen(false);
+    localStorage.clear();
+    syncAuthState();
     navigate("/");
   };
 
-  const handleMenuButtonClick = () => setIsMobileMenuOpen((open) => !open);
-
-  const handleMobileLinkClick = () => setIsMobileMenuOpen(false);
-
   return (
     <>
-      <nav className={styles.navbar}>
-        <div className={styles.logo}>
-          <Link to="/">
-            Edu<span>Learn</span>
-          </Link>
-        </div>
-
-        {/* Desktop Navigation */}
-        <div className={styles.navLinks}>
-          {isLoggedIn && userRole === "student" && (
-            <Link to="/mycourse">My Courses</Link>
-          )}
-
-          {isLoggedIn ? (
-            <>
-              <Link to="/profile">Profile</Link>
-              <button onClick={handleLogout} className={styles.logoutButton}>
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/signup" className={styles.authLink}>
-                Sign Up
-              </Link>
-              <Link to="/login" className={styles.authLink}>
-                Login
-              </Link>
-            </>
-          )}
-
-          {isLoggedIn && userRole === "admin" && (
-            <Link to="/admin/dashboard" className={styles.instructorButton}>
-              Admin Dashboard
+      <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
+        <div className={styles.navContainer}>
+          <div className={styles.logo}>
+            <Link to="/">
+              Edu<span>Learn</span>
             </Link>
-          )}
-        </div>
+          </div>
 
-        {/* Mobile Navigation */}
-        <div className={styles.mobileMenu}>
+          {/* Desktop Navigation */}
+          <div className={styles.navLinks}>
+            <Link
+              to="/browse"
+              className={
+                location.pathname === "/browse" ? styles.activeLink : ""
+              }
+            >
+              Browse
+            </Link>
+
+            {isLoggedIn && userRole === "student" && (
+              <Link
+                to="/mycourse"
+                className={
+                  location.pathname === "/mycourse" ? styles.activeLink : ""
+                }
+              >
+                My Learning
+              </Link>
+            )}
+
+            <div className={styles.divider}></div>
+
+            {isLoggedIn ? (
+              <>
+                <Link to="/profile" className={styles.profileLink}>
+                  Profile
+                </Link>
+                {userRole === "admin" && (
+                  <Link to="/admin/dashboard" className={styles.adminBadge}>
+                    Admin
+                  </Link>
+                )}
+                <button onClick={handleLogout} className={styles.logoutBtn}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className={styles.loginLink}>
+                  Login
+                </Link>
+                <Link to="/signup" className={styles.signupBtn}>
+                  Get Started
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Toggle */}
           <button
-            onClick={handleMenuButtonClick}
-            className={`${styles.menuButton} ${
-              isMobileMenuOpen ? styles.active : ""
-            }`}
-            aria-label="Mobile menu"
-            aria-expanded={isMobileMenuOpen}
-            aria-controls="mobileNavLinks"
+            className={styles.menuToggle}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle Navigation"
           >
             {isMobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Drawer */}
       <div
-        id="mobileNavLinks"
-        className={`${styles.mobileNavLinks} ${
-          isMobileMenuOpen ? styles.active : ""
-        }`}
-        aria-hidden={!isMobileMenuOpen}
-        tabIndex={isMobileMenuOpen ? 0 : -1}
+        className={`${styles.mobileDrawer} ${isMobileMenuOpen ? styles.drawerOpen : ""}`}
         ref={mobileMenuRef}
       >
-        <Link to="/browse" onClick={handleMobileLinkClick}>
-          Browse Courses
-        </Link>
-        {isLoggedIn && userRole === "student" && (
-          <Link to="/mycourse" onClick={handleMobileLinkClick}>
-            My Courses
-          </Link>
-        )}
-
-        {isLoggedIn ? (
-          <>
-            <Link to="/profile" onClick={handleMobileLinkClick}>
-              Profile
-            </Link>
-            <button
-              onClick={() => {
-                handleLogout();
-                handleMobileLinkClick();
-              }}
-              className={styles.logoutButton}
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/signup" onClick={handleMobileLinkClick}>
-              Sign Up
-            </Link>
-            <Link to="/login" onClick={handleMobileLinkClick}>
-              Login
-            </Link>
-          </>
-        )}
-
-        {isLoggedIn && userRole === "admin" && (
-          <Link
-            to="/admin/dashboard"
-            onClick={handleMobileLinkClick}
-            className={styles.instructorButton}
-          >
-            Admin Dashboard
-          </Link>
-        )}
+        <div className={styles.drawerLinks}>
+          <Link to="/browse">Browse Courses</Link>
+          {isLoggedIn && userRole === "student" && (
+            <Link to="/mycourse">My Learning</Link>
+          )}
+          <hr className={styles.drawerDivider} />
+          {isLoggedIn ? (
+            <>
+              <Link to="/profile">Profile</Link>
+              {userRole === "admin" && (
+                <Link to="/admin/dashboard">Admin Dashboard</Link>
+              )}
+              <button onClick={handleLogout} className={styles.mobileLogoutBtn}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login">Login</Link>
+              <Link to="/signup" className={styles.mobileSignupBtn}>
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
-      {/* Backdrop */}
       {isMobileMenuOpen && (
         <div
-          className={`${styles.backdrop} ${
-            isMobileMenuOpen ? styles.active : ""
-          }`}
+          className={styles.overlay}
           onClick={() => setIsMobileMenuOpen(false)}
-          aria-label="Close mobile menu"
-          tabIndex={0}
         />
       )}
     </>
